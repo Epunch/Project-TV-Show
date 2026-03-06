@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Drug Wars</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+  <body>
+    <!-- ═══════════════════════════════════════════════════════════════════════════ -->
+    <!--  INTRO SCREEN                                                          -->
+    <!-- ═══════════════════════════════════════════════════════════════════════════ -->
+    <div id="intro-screen" class="intro-screen">
+      <div class="intro-box">
+        <pre class="intro-ascii">
+  ____  ____  __  __  ____    _    _   _    ____  ____
+ |  _ \|  _ \|  \/  |/ ___|  | |  | | | |  |  _ \/ ___|
+ | | | | |_) | |\/| | |  _   | |  | | | |  | |_) \___ \
+ | |_| |  _ <| |  | | |_| |  | |__| |_| |  |  _ < ___) |
+ |____/|_| \_\_|  |_|\____|  |_____\___/   |_| \_\____/</pre
+        >
+        <h1 class="intro-title">DRUG WARS</h1>
+        <p class="intro-subtitle">THE CLASSIC STREET TRADING GAME</p>
+
+        <div class="intro-form">
+          <label class="intro-label" for="player-name-input"
+            >Enter your name, dealer</label
+          >
+          <input
+            id="player-name-input"
+            class="intro-input"
+            type="text"
+            maxlength="20"
+            placeholder="e.g. El Chapo"
+            autocomplete="off"
+            spellcheck="false"
+          />
+
+          <!-- ── Classic mode buttons ──────────────────────────────────── -->
+          <div class="intro-mode-row">
+            <button
+              id="btn-classic"
+              class="btn btn-mode btn-mode-active"
+              data-mode="classic"
+            >
+              CLASSIC
+            </button>
+            <button
+              id="btn-choose-days"
+              class="btn btn-mode"
+              data-mode="choose-days"
+            >
+              CHOOSE DAYS
+            </button>
+            <button id="btn-advanced" class="btn btn-mode" data-mode="advanced">
+              ADVANCED
+            </button>
+          </div>
+
+          <!-- ── Classic: rules text ───────────────────────────────────── -->
+          <div id="mode-classic" class="intro-mode-panel">
+            <div class="intro-rules">
+              <strong>&gt; THE DEAL</strong><br />
+              You start with <strong>$2,000 cash</strong> and a
+              <strong>$5,500 debt</strong> to the loan shark.<br />
+              You have <strong>30 days</strong> to pay it off and make your
+              fortune.<br />
+              Buy low. Sell high. Dodge the cops. Don't get mugged.<br />
+              <strong>The goal:</strong> clear your debt and become the most
+              powerful dealer in the city.
+            </div>
+          </div>
+
+          <!-- ── Choose Days: slider ───────────────────────────────────── -->
+          <div id="mode-choose-days" class="intro-mode-panel hidden">
+            <div class="intro-slider-group">
+              <label class="intro-slider-label">
+                Game Length:
+                <span id="choose-days-val" class="intro-slider-val">30</span>
+                days
+              </label>
+              <input
+                id="choose-days-slider"
+                type="range"
+                min="10"
+                max="90"
+                value="30"
+                class="intro-slider"
+              />
+              <div class="intro-preview">
+                <span>Debt: <strong id="choose-days-debt">$5,500</strong></span>
+                <span
+                  >Interest: <strong id="choose-days-rate">10%</strong> /
+                  day</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Advanced Settings: full sliders ───────────────────────── -->
+          <div id="mode-advanced" class="intro-mode-panel hidden">
+            <div class="intro-slider-group">
+              <label class="intro-slider-label">
+                Game Length:
+                <span id="adv-days-val" class="intro-slider-val">30</span> days
+              </label>
+              <input
+                id="adv-days-slider"
+                type="range"
+                min="10"
+                max="90"
+                value="30"
+                class="intro-slider"
+              />
+              <div class="intro-preview">
+                <span>Debt: <strong id="adv-debt-preview">$5,500</strong></span>
+                <span
+                  >Interest: <strong id="adv-rate-preview">10%</strong> /
+                  day</span
+                >
+              </div>
+            </div>
+            <div class="intro-slider-group">
+              <label class="intro-slider-label">
+                Starting Cash:
+                <strong id="adv-cash-val" class="intro-slider-val"
+                  >$2,000</strong
+                >
+              </label>
+              <input
+                id="adv-cash-slider"
+                type="range"
+                min="500"
+                max="10000"
+                step="500"
+                value="2000"
+                class="intro-slider"
+              />
+            </div>
+            <div class="intro-slider-group">
+              <label class="intro-slider-label">
+                Coat Capacity:
+                <strong id="adv-coat-val" class="intro-slider-val">100</strong>
+              </label>
+              <input
+                id="adv-coat-slider"
+                type="range"
+                min="50"
+                max="200"
+                step="10"
+                value="100"
+                class="intro-slider"
+              />
+            </div>
+            <div class="intro-slider-group">
+              <label class="intro-slider-label">Police Aggression</label>
+              <div class="intro-toggle-row">
+                <button
+                  class="btn btn-toggle"
+                  data-group="police"
+                  data-val="0.5"
+                >
+                  Low
+                </button>
+                <button
+                  class="btn btn-toggle btn-toggle-active"
+                  data-group="police"
+                  data-val="1"
+                >
+                  Normal
+                </button>
+                <button
+                  class="btn btn-toggle"
+                  data-group="police"
+                  data-val="1.5"
+                >
+                  High
+                </button>
+              </div>
+            </div>
+            <div class="intro-slider-group">
+              <label class="intro-slider-label">Market Volatility</label>
+              <div class="intro-toggle-row">
+                <button
+                  class="btn btn-toggle"
+                  data-group="volatility"
+                  data-val="0.5"
+                >
+                  Calm
+                </button>
+                <button
+                  class="btn btn-toggle btn-toggle-active"
+                  data-group="volatility"
+                  data-val="1"
+                >
+                  Normal
+                </button>
+                <button
+                  class="btn btn-toggle"
+                  data-group="volatility"
+                  data-val="1.5"
+                >
+                  Chaotic
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <button id="btn-start-game" class="btn btn-confirm intro-start">
+            START GAME
+          </button>
+
+          <!-- ── Hustler mode divider + button ─────────────────────────── -->
+          <div class="intro-divider">
+            <span class="intro-divider-line"></span>
+            <span class="intro-divider-text">or</span>
+            <span class="intro-divider-line"></span>
+          </div>
+
+          <button id="btn-hustler-mode" class="btn btn-hustler intro-start">
+            🔥 HUSTLER MODE
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════ -->
+    <!--  HUSTLER INFO SCREEN                                                     -->
+    <!-- ═══════════════════════════════════════════════════════════════════════════ -->
+    <div id="hustler-info-screen" class="intro-screen hidden">
+      <div class="intro-box hustler-info-box">
+        <h1 class="intro-title hustler-title">🔥 HUSTLER MODE</h1>
+        <p class="intro-subtitle">THE LONG GAME — SURVIVE THE STREETS</p>
+
+        <div class="hustler-features">
+          <div class="hustler-feature">
+            <span class="hustler-icon">🏥</span>
+            <div>
+              <strong>Health System</strong>
+              <p>
+                You start with 100 HP. Cops and muggers hurt. Hit 0 and you're
+                done — no matter the day.
+              </p>
+            </div>
+          </div>
+          <div class="hustler-feature">
+            <span class="hustler-icon">🚔</span>
+            <div>
+              <strong>Officer Hardass</strong>
+              <p>
+                A named cop who gets tougher every 10 days. Fight, Run, or
+                Surrender — your call.
+              </p>
+            </div>
+          </div>
+          <div class="hustler-feature">
+            <span class="hustler-icon">🏦</span>
+            <div>
+              <strong>Big Vinnie</strong>
+              <p>
+                Your loan shark has a name and a temper. Ignore your debt and
+                his boys come knocking.
+              </p>
+            </div>
+          </div>
+          <div class="hustler-feature">
+            <span class="hustler-icon">📱</span>
+            <div>
+              <strong>Street Intel</strong>
+              <p>
+                Daily tips on prices and police heat. Trust them? About 70% are
+                legit.
+              </p>
+            </div>
+          </div>
+          <div class="hustler-feature">
+            <span class="hustler-icon">🎲</span>
+            <div>
+              <strong>Street Vendor</strong>
+              <p>
+                Random items for sale when you travel. Fake IDs, scanners,
+                vests, bandages.
+              </p>
+            </div>
+          </div>
+          <div class="hustler-feature">
+            <span class="hustler-icon">📅</span>
+            <div>
+              <strong>Day Summary</strong>
+              <p>End-of-day recap so you don't miss a thing.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="intro-slider-group">
+          <label class="intro-slider-label">
+            Game Length:
+            <span id="hustler-days-val" class="intro-slider-val">120</span> days
+          </label>
+          <input
+            id="hustler-days-slider"
+            type="range"
+            min="60"
+            max="365"
+            value="120"
+            class="intro-slider"
+          />
+          <div class="intro-preview">
+            <span
+              >Debt: <strong id="hustler-debt-preview">$22,000</strong></span
+            >
+            <span
+              >Interest: <strong id="hustler-rate-preview">2.5%</strong> /
+              day</span
+            >
+          </div>
+        </div>
+
+        <div class="hustler-btn-row">
+          <button id="btn-start-hustler" class="btn btn-hustler intro-start">
+            START HUSTLER MODE
+          </button>
+          <button id="btn-hustler-back" class="btn btn-cancel">← BACK</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════ -->
+    <!--  GAME SCREEN                                                           -->
+    <!-- ═══════════════════════════════════════════════════════════════════════════ -->
+    <div id="game-screen" class="hidden">
+      <!-- Header bar -->
+      <header class="top-bar">
+        <span id="location-name" class="top-location">BRONX</span>
+        <span class="top-player"
+          >dealer: <span id="player-name-display">---</span></span
+        >
+        <span class="top-title">DRUG WARS</span>
+        <span class="top-right">
+          <span id="day-counter">days left: 30</span>
+          <span class="sep">|</span>
+          <span id="hold-counter">hold: 0 / 100</span>
+          <span class="sep">|</span>
+          <button id="btn-theme-toggle" class="btn-theme">🌙 Dark</button>
+        </span>
+      </header>
+
+      <!-- Main layout: left panel | centre | right sidebar -->
+      <div class="layout">
+        <!-- ── LEFT: Inventory ─────────────────────────────────────────── -->
+        <section class="panel panel-inventory">
+          <div class="panel-split">
+            <!-- Stash -->
+            <div class="inv-col">
+              <h2 class="panel-title">STASH</h2>
+              <table class="inv-table">
+                <tbody id="stash-body"></tbody>
+              </table>
+            </div>
+
+            <!-- Trench coat -->
+            <div class="inv-col">
+              <h2 class="panel-title">TRENCH COAT</h2>
+              <table class="inv-table">
+                <tbody id="coat-body"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Stats row inside inventory panel -->
+          <div class="stats-row">
+            <div class="stat-item">
+              <span class="stat-label">cash</span>
+              <span class="stat-val" id="stat-cash">$2,000</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">bank</span>
+              <span class="stat-val" id="stat-bank">$0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">debt</span>
+              <span class="stat-val stat-debt" id="stat-debt">$5,500</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">guns</span>
+              <span class="stat-val" id="stat-guns">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">net worth</span>
+              <span class="stat-val" id="stat-networth">$0</span>
+            </div>
+            <div class="stat-item stat-hp-item hidden" id="stat-hp-row">
+              <span class="stat-label">HP</span>
+              <div class="hp-bar-wrap">
+                <div class="hp-bar" id="stat-hp-bar" style="width: 100%"></div>
+                <span class="hp-text" id="stat-hp-text">100</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Items row (Hustler mode only) -->
+          <div class="items-row hidden" id="items-row">
+            <span class="stat-label">ITEMS</span>
+            <div class="items-list" id="items-list">—</div>
+          </div>
+        </section>
+
+        <!-- ── CENTRE: Market + Log ────────────────────────────────────── -->
+        <section class="panel panel-centre">
+          <!-- Market section: shrinks to fit its content -->
+          <div class="market-section">
+            <h2 class="panel-title">STREET MARKET</h2>
+            <table class="market-table">
+              <thead>
+                <tr>
+                  <th>Drug</th>
+                  <th>Price</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="market-body"></tbody>
+            </table>
+          </div>
+
+          <!-- Log section: fills all remaining height and scrolls internally -->
+          <div class="log-section">
+            <h2 class="panel-title mt">EVENT LOG</h2>
+            <ul id="log-list" class="log-list"></ul>
+          </div>
+        </section>
+
+        <!-- ── RIGHT: Travel + Actions ────────────────────────────────── -->
+        <aside class="panel panel-sidebar">
+          <h2 class="panel-title">TRAVEL</h2>
+          <ul id="travel-list" class="travel-list">
+            <!-- Filled by JS -->
+          </ul>
+
+          <h2 class="panel-title mt">ACTIONS</h2>
+          <div class="action-btns">
+            <button id="btn-bank-deposit" class="btn btn-action">
+              Bank: Deposit
+            </button>
+            <button id="btn-bank-withdraw" class="btn btn-action">
+              Bank: Withdraw
+            </button>
+            <button id="btn-pay-debt" class="btn btn-action btn-danger">
+              Pay Debt
+            </button>
+            <button id="btn-borrow" class="btn btn-action btn-warn">
+              Borrow $
+            </button>
+            <button id="btn-buy-gun" class="btn btn-action">
+              Buy Gun ($400)
+            </button>
+            <button id="btn-upgrade-coat" class="btn btn-action">
+              Upgrade Coat ($500)
+            </button>
+            <button id="btn-buy-bandages" class="btn btn-action hidden">
+              Buy Bandages ($200)
+            </button>
+            <button id="btn-visit-clinic" class="btn btn-action hidden">
+              🏥 Visit Clinic ($1,000)
+            </button>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!--  END SCREEN                                                            -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <div id="end-screen" class="hidden end-screen">
+      <div class="end-box">
+        <h1 id="end-title">GAME OVER</h1>
+        <p id="end-message"></p>
+        <p id="end-networth"></p>
+        <button id="btn-restart" class="btn btn-confirm mt">PLAY AGAIN</button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!--  MODAL OVERLAY                                                         -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <div id="modal-overlay" class="modal-overlay hidden">
+      <div class="modal-box">
+        <h3 id="modal-title" class="modal-title"></h3>
+        <div id="modal-body" class="modal-body"></div>
+      </div>
+    </div>
+
+    <script type="module" src="src/main.js"></script>
+
+    <!-- Populate travel list after state is ready -->
+    <script type="module">
+      import { LOCATIONS } from "./src/data/locations.js";
+      document.addEventListener("DOMContentLoaded", () => {
+        const list = document.getElementById("travel-list");
+        list.innerHTML = LOCATIONS.map(
+          (loc) => `
+        <li>
+          <button class="btn btn-travel" data-location="${loc.id}">${loc.name}</button>
+        </li>`,
+        ).join("");
+      });
+    </script>
+  </body>
+</html>

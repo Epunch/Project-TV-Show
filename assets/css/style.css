@@ -1,0 +1,1203 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Drug Wars — Retro Terminal UI
+   Colour palette inspired by classic green-phosphor CRT screens.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Reset & base ─────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Dark theme (default) ────────────────────────────────────────────────── */
+/* Contrast notes (on --bg #0a1a12 / --bg-panel #0d2218):
+   --green      #39ff9f  → 9.8:1  ✅ AAA
+   --text-muted #7fffc4  → 6.2:1  ✅ AA large / AAA normal
+   --danger     #ff6b6b  → 6.4:1  ✅ AA
+   --warn       #ffc040  → 8.1:1  ✅ AAA                   */
+:root {
+  --green: #39ff9f;
+  --green-dim: #1fd98a;
+  --green-dark: #0a3d26;
+  --bg: #0a1a12;
+  --bg-panel: #0d2218;
+  --bg-alt: #102b1f;
+  --border: #1a5c3a;
+  --danger: #ff6b6b;
+  --warn: #ffc040;
+  --text: #39ff9f;
+  --text-muted: #7fffc4;
+  --font: "Courier New", Courier, monospace;
+  --radius: 2px;
+  --scanline: rgba(0, 0, 0, 0.08);
+}
+
+/* ── Light theme ─────────────────────────────────────────────────────────── */
+[data-theme="light"] {
+  --green: #006644;
+  --green-dim: #008855;
+  --green-dark: #c8ede0;
+  --bg: #f0f5f2;
+  --bg-panel: #ffffff;
+  --bg-alt: #e6f0eb;
+  --border: #b0d4c2;
+  --danger: #c0392b;
+  --warn: #b07800;
+  --text: #006644;
+  --text-muted: #3d8a6a;
+  --font: "Courier New", Courier, monospace;
+  --radius: 2px;
+  --scanline: rgba(0, 0, 0, 0.02);
+}
+
+html,
+body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ── Utility ──────────────────────────────────────────────────────────────── */
+.hidden {
+  display: none !important;
+}
+.mt {
+  margin-top: 1rem;
+}
+
+/* ── Top bar ──────────────────────────────────────────────────────────────── */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+  padding: 0.65rem 1.25rem;
+  letter-spacing: 0.05em;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.top-location {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--green);
+}
+
+.top-title {
+  font-size: 1rem;
+  color: var(--text-muted);
+  letter-spacing: 0.2em;
+}
+
+.top-right {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.sep {
+  margin: 0 0.5rem;
+}
+
+/* ── Layout ───────────────────────────────────────────────────────────────── */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr 260px;
+  gap: 1px;
+  height: calc(100vh - 50px);
+  background: var(--border);
+}
+
+/* ── Panels ───────────────────────────────────────────────────────────────── */
+.panel {
+  background: var(--bg-panel);
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.panel-title {
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.35rem;
+  margin-bottom: 0.65rem;
+}
+
+/* ── Inventory panel ──────────────────────────────────────────────────────── */
+.panel-inventory {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.panel-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  flex: 1;
+}
+
+.inv-col {
+  background: var(--bg-panel);
+  padding: 0.5rem;
+}
+
+.inv-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.inv-table td {
+  padding: 0.3rem 0.3rem;
+  vertical-align: middle;
+  font-size: 0.95rem;
+}
+
+.drug-name {
+  color: var(--green);
+  width: 45%;
+}
+.drug-qty {
+  text-align: right;
+  color: var(--text-muted);
+  width: 20%;
+  font-weight: bold;
+}
+.drug-actions {
+  text-align: right;
+  width: 35%;
+}
+
+/* ── Stats row ────────────────────────────────────────────────────────────── */
+.stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  border-top: 1px solid var(--border);
+  padding-top: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.stat-item {
+  flex: 1 1 auto;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.65rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-width: 130px;
+}
+
+.stat-label {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+.stat-val {
+  color: var(--green);
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+.stat-debt {
+  color: var(--danger);
+}
+
+/* ── Market table ─────────────────────────────────────────────────────────── */
+.market-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.market-table th {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-align: left;
+  padding: 0.3rem 0.3rem;
+  border-bottom: 1px solid var(--border);
+  letter-spacing: 0.1em;
+}
+
+.market-table td {
+  padding: 0.35rem 0.3rem;
+  vertical-align: middle;
+  font-size: 0.95rem;
+}
+
+.drug-price {
+  text-align: right;
+  color: var(--green);
+  padding-right: 0.5rem;
+}
+
+/* ── Log ──────────────────────────────────────────────────────────────────────────── */
+.log-list {
+  list-style: none;
+  font-size: 0.9rem;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.6rem;
+  background: var(--bg);
+}
+
+.log-list li {
+  color: var(--text-muted);
+  padding: 0.25rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.log-list li:first-child {
+  color: var(--green);
+}
+
+/* ── Sidebar ─────────────────────────────────────────────────────────────────── */
+.panel-centre {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* panel itself never scrolls */
+}
+
+.panel-centre .market-section {
+  flex-shrink: 0; /* market table takes only what it needs */
+  overflow-y: auto;
+}
+
+.panel-centre .log-section {
+  flex: 1 1 0; /* log section fills ALL remaining height */
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* critical: allows flex child to shrink below content size */
+  overflow: hidden;
+}
+
+.panel-centre .log-section .log-list {
+  flex: 1 1 0;
+  min-height: 0;
+  max-height: none; /* height is now controlled by flex, not max-height */
+  overflow-y: auto;
+}
+
+/* ── Sidebar ─────────────────────────────────────────────────────────────────── */
+.panel-sidebar {
+  background: var(--bg-alt);
+  overflow-y: auto;
+}
+
+.travel-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.action-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+/* ── Buttons ──────────────────────────────────────────────────────────────── */
+.btn {
+  background: transparent;
+  border: 1px solid var(--green-dim);
+  color: var(--green);
+  font-family: var(--font);
+  font-size: 0.9rem;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition:
+    background 0.1s,
+    color 0.1s;
+  width: 100%;
+  text-align: center;
+  border-radius: var(--radius);
+}
+
+.btn:hover {
+  background: var(--green-dark);
+  color: var(--green);
+  border-color: var(--green);
+}
+
+.btn:active {
+  background: var(--green);
+  color: var(--bg);
+}
+
+.btn-sm {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: var(--font);
+  font-size: 0.8rem;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  border-radius: var(--radius);
+  transition: all 0.1s;
+}
+
+.btn-sm:hover {
+  border-color: var(--green-dim);
+  color: var(--green);
+}
+.btn-buy:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+.btn-sell:hover {
+  border-color: var(--warn);
+  color: var(--warn);
+}
+.btn-danger {
+  border-color: var(--danger) !important;
+  color: var(--danger) !important;
+}
+.btn-danger:hover {
+  background: var(--bg-alt) !important;
+}
+.btn-warn {
+  border-color: var(--warn) !important;
+  color: var(--warn) !important;
+}
+.btn-warn:hover {
+  background: var(--bg-alt) !important;
+}
+.btn-travel {
+  border-color: var(--border);
+  text-align: left;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.85rem;
+}
+.btn-travel:hover {
+  border-color: var(--green-dim);
+  background: var(--green-dark);
+}
+.btn-travel.btn-travel-current {
+  border-color: var(--green);
+  color: var(--green);
+  background: var(--green-dark);
+  pointer-events: none;
+  opacity: 0.7;
+}
+.btn-travel.btn-travel-current::after {
+  content: " ◄";
+  font-size: 0.75em;
+}
+.btn-action {
+  text-align: left;
+  font-size: 0.8rem;
+  padding: 0.35rem 0.6rem;
+}
+
+/* ── Modal overlay ────────────────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal-box {
+  background: var(--bg-panel);
+  border: 1px solid var(--green-dim);
+  padding: 1.75rem 2rem;
+  width: min(460px, 92vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 0 30px rgba(57, 255, 159, 0.1);
+}
+
+.modal-title {
+  font-size: 1.15rem;
+  letter-spacing: 0.15em;
+  color: var(--green);
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+}
+
+.modal-label {
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.modal-max {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.modal-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--green-dim);
+  color: var(--green);
+  font-family: var(--font);
+  font-size: 1rem;
+  padding: 0.4rem 0.6rem;
+  outline: none;
+  margin-bottom: 0.25rem;
+}
+
+.modal-input:focus {
+  border-color: var(--green);
+}
+
+.modal-btns {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.modal-btns .btn {
+  width: auto;
+  flex: 1;
+}
+.btn-confirm {
+  border-color: var(--green);
+  color: var(--green);
+}
+.btn-confirm:hover {
+  background: var(--green-dark);
+}
+.btn-cancel {
+  border-color: var(--text-muted);
+  color: var(--text-muted);
+}
+.btn-cancel:hover {
+  background: var(--bg-alt);
+}
+.btn-max {
+  border-color: var(--warn);
+  color: var(--warn);
+}
+.btn-max:hover {
+  background: var(--bg-alt);
+}
+
+/* ── End screen ───────────────────────────────────────────────────────────── */
+.end-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.end-box {
+  text-align: center;
+  border: 1px solid var(--green-dim);
+  padding: 2.5rem 3rem;
+  max-height: 92vh;
+  overflow-y: auto;
+  background: var(--bg-panel);
+  box-shadow: 0 0 60px rgba(0, 229, 160, 0.1);
+}
+
+.end-box h1 {
+  font-size: 3rem;
+  letter-spacing: 0.25em;
+  color: var(--green);
+  margin-bottom: 1.25rem;
+}
+
+.end-box p {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  margin-bottom: 0.6rem;
+}
+
+.end-box .btn {
+  margin-top: 1.5rem;
+  width: 200px;
+}
+
+/* ── Scrollbar styling ────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--green-dim);
+}
+
+/* ── Theme toggle button ─────────────────────────────────────────────────── */
+.btn-theme {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: var(--font);
+  font-size: 0.85rem;
+  padding: 0.3rem 0.75rem;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  border-radius: var(--radius);
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn-theme:hover {
+  border-color: var(--green-dim);
+  color: var(--green);
+  background: var(--green-dark);
+}
+
+/* ── Player name in header ───────────────────────────────────────────────── */
+.top-player {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+}
+.top-player span {
+  color: var(--green);
+  font-weight: bold;
+}
+
+/* ── Intro screen ────────────────────────────────────────────────────────── */
+.intro-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 300;
+}
+
+.intro-box {
+  width: min(640px, 92vw);
+  max-height: 92vh;
+  overflow-y: auto;
+  border: 1px solid var(--green-dim);
+  padding: 2.5rem 3rem;
+  background: var(--bg-panel);
+  box-shadow: 0 0 80px rgba(57, 255, 159, 0.07);
+  text-align: center;
+}
+
+.intro-ascii {
+  font-size: 0.62rem;
+  line-height: 1.25;
+  color: var(--green-dim);
+  white-space: pre;
+  margin-bottom: 1rem;
+  letter-spacing: 0.04em;
+}
+
+.intro-title {
+  font-size: 2.2rem;
+  letter-spacing: 0.35em;
+  color: var(--green);
+  margin-bottom: 0.35rem;
+}
+
+.intro-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  letter-spacing: 0.18em;
+  margin-bottom: 1.25rem;
+}
+
+.intro-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.intro-label {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  align-self: flex-start;
+}
+
+.intro-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--green-dim);
+  color: var(--green);
+  font-family: var(--font);
+  font-size: 1.15rem;
+  padding: 0.5rem 0.75rem;
+  outline: none;
+  text-align: center;
+  letter-spacing: 0.12em;
+}
+
+.intro-input:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 10px rgba(57, 255, 159, 0.18);
+}
+
+.intro-input::placeholder {
+  color: var(--green-dim);
+  opacity: 0.5;
+}
+
+.intro-rules {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  text-align: left;
+  width: 100%;
+  border-top: 1px solid var(--border);
+  padding-top: 0.75rem;
+  margin-top: 0.35rem;
+}
+
+.intro-rules strong {
+  color: var(--green);
+}
+
+.intro-start {
+  width: 100%;
+  padding: 0.65rem;
+  font-size: 0.95rem;
+  letter-spacing: 0.25em;
+  margin-top: 0.5rem;
+}
+
+/* ── Mode selector buttons ───────────────────────────────────────────────── */
+.intro-mode-row {
+  display: flex;
+  gap: 0.35rem;
+  width: 100%;
+}
+
+.btn-mode {
+  flex: 1;
+  padding: 0.5rem 0.25rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  border-color: var(--border);
+  color: var(--text-muted);
+  background: transparent;
+}
+
+.btn-mode-active,
+.btn-mode:hover {
+  border-color: var(--green);
+  color: var(--green);
+  background: var(--green-dark);
+}
+
+.intro-mode-panel {
+  width: 100%;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Sliders ─────────────────────────────────────────────────────────────── */
+.intro-slider-group {
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.intro-slider-label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+  text-align: left;
+}
+
+.intro-slider-val {
+  color: var(--green);
+  font-weight: bold;
+}
+
+.intro-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+
+.intro-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--green);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.intro-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: var(--green);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.intro-preview {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.35rem;
+}
+
+.intro-preview strong {
+  color: var(--green);
+}
+
+/* ── Toggle buttons (Low/Normal/High etc.) ───────────────────────────────── */
+.intro-toggle-row {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.btn-toggle {
+  flex: 1;
+  padding: 0.35rem;
+  font-size: 0.8rem;
+  border-color: var(--border);
+  color: var(--text-muted);
+  background: transparent;
+}
+
+.btn-toggle-active,
+.btn-toggle:hover {
+  border-color: var(--green);
+  color: var(--green);
+  background: var(--green-dark);
+}
+
+/* ── Intro divider ───────────────────────────────────────────────────────── */
+.intro-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  margin: 0.5rem 0;
+}
+
+.intro-divider-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.intro-divider-text {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* ── Hustler mode button ─────────────────────────────────────────────────── */
+.btn-hustler {
+  border-color: var(--warn);
+  color: var(--warn);
+  font-size: 1rem;
+  letter-spacing: 0.2em;
+}
+
+.btn-hustler:hover {
+  background: rgba(255, 192, 64, 0.1);
+  border-color: var(--warn);
+  color: var(--warn);
+}
+
+.btn-hustler:active {
+  background: var(--warn);
+  color: var(--bg);
+}
+
+/* ── Hustler info screen ─────────────────────────────────────────────────── */
+.hustler-info-box {
+  width: min(680px, 94vw);
+  max-height: 92vh;
+  overflow-y: auto;
+  padding: 2rem 2.5rem;
+}
+
+.hustler-title {
+  color: var(--warn);
+  font-size: 1.8rem;
+}
+
+.hustler-features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  text-align: left;
+  margin: 1rem 0;
+  width: 100%;
+}
+
+.hustler-feature {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  padding: 0.5rem 0.6rem;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.hustler-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  width: 1.6rem;
+  text-align: center;
+}
+
+.hustler-feature strong {
+  color: var(--green);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.hustler-feature p {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  margin-top: 0.1rem;
+  line-height: 1.4;
+}
+
+.hustler-btn-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+/* ── HP bar ──────────────────────────────────────────────────────────────── */
+.stat-hp-item {
+  flex-basis: 100% !important;
+}
+
+.hp-bar-wrap {
+  flex: 1;
+  position: relative;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  height: 1.2rem;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.hp-bar {
+  height: 100%;
+  background: var(--green);
+  transition:
+    width 0.3s ease,
+    background 0.3s ease;
+}
+
+.hp-bar.hp-mid {
+  background: var(--warn);
+}
+
+.hp-bar.hp-low {
+  background: var(--danger);
+}
+
+.hp-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: var(--bg);
+  letter-spacing: 0.05em;
+}
+
+/* ── Items row ───────────────────────────────────────────────────────────── */
+.items-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-top: 1px solid var(--border);
+  padding-top: 0.4rem;
+  margin-top: 0.3rem;
+}
+
+.items-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.item-badge {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--radius);
+  font-size: 0.75rem;
+  color: var(--warn);
+  white-space: nowrap;
+}
+
+/* ── Day summary modal ───────────────────────────────────────────────────── */
+.day-summary {
+  text-align: left;
+  line-height: 1.8;
+}
+
+.day-summary .summary-heading {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.day-summary .summary-events {
+  margin-bottom: 0.75rem;
+}
+
+.day-summary .summary-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.day-summary .summary-stat {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+}
+
+.day-summary .summary-stat .positive {
+  color: var(--green);
+}
+
+.day-summary .summary-stat .negative {
+  color: var(--danger);
+}
+
+.day-summary .summary-tip {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--warn);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+  color: var(--warn);
+  margin-top: 0.5rem;
+}
+
+/* ── Police encounter modal ──────────────────────────────────────────────── */
+.police-encounter {
+  text-align: center;
+}
+
+.police-encounter p {
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.police-encounter .encounter-stats {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.police-encounter .encounter-stats strong {
+  color: var(--green);
+}
+
+.police-btns {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.police-btns .btn {
+  flex: 1;
+}
+
+/* ── Vendor modal ────────────────────────────────────────────────────────── */
+.vendor-offer {
+  text-align: center;
+}
+
+.vendor-offer .vendor-item-name {
+  font-size: 1.1rem;
+  color: var(--warn);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.1em;
+}
+
+.vendor-offer .vendor-item-desc {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+
+.vendor-offer .vendor-item-cost {
+  color: var(--green);
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+/* ── Log tip entry ───────────────────────────────────────────────────────── */
+.log-list li.log-tip {
+  color: var(--warn);
+  border-left: 3px solid var(--warn);
+  padding-left: 0.5rem;
+}
+
+/* ── Police scanner heat indicators ──────────────────────────────────────── */
+.btn-travel .heat-indicator {
+  margin-left: 0.5rem;
+  font-size: 0.85rem;
+}
+
+/* ── Vinnie job badge ────────────────────────────────────────────────────── */
+.item-badge-job {
+  background: var(--warn) !important;
+  color: #000 !important;
+  font-weight: bold;
+  animation: pulse-job 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-job {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* ── Vinnie job offer modal ──────────────────────────────────────────────── */
+.vinnie-job-offer {
+  text-align: center;
+}
+
+.vinnie-job-offer p {
+  margin-bottom: 0.75rem;
+}
+
+.vinnie-job-details {
+  color: var(--warn);
+  font-size: 1.05rem;
+  font-weight: bold;
+  margin: 1rem 0;
+}
+
+.vinnie-job-offer .text-muted {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* ── Short viewport safety ────────────────────────────────────────────────── */
+@media (max-height: 750px) {
+  .intro-ascii {
+    font-size: 0.52rem;
+    margin-bottom: 0.5rem;
+  }
+  .intro-title {
+    font-size: 1.6rem;
+    margin-bottom: 0.2rem;
+  }
+  .intro-subtitle {
+    margin-bottom: 0.75rem;
+  }
+  .intro-box {
+    padding: 1.5rem 2rem;
+  }
+  .hustler-info-box {
+    padding: 1.25rem 1.5rem;
+  }
+  .hustler-features {
+    gap: 0.35rem;
+    margin: 0.5rem 0;
+  }
+  .hustler-feature {
+    padding: 0.35rem 0.5rem;
+  }
+  .intro-slider-group {
+    margin-bottom: 0.3rem;
+  }
+  .modal-box {
+    padding: 1.25rem 1.5rem;
+  }
+  .end-box {
+    padding: 1.5rem 2rem;
+  }
+  .end-box h1 {
+    font-size: 2rem;
+  }
+}
+
+/* ── CRT scan-line effect (subtle) ───────────────────────────────────────── */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 2px,
+    var(--scanline) 2px,
+    var(--scanline) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
