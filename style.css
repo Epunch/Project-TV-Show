@@ -1,3 +1,56 @@
+/* style.css */
+
+body {
+  background-color: #000;
+  /* Setting a lighter font weight for a more elegant look */
+  font-weight: 300;
+  /* Setting the main text to a soft gray instead of pure white */
+  color: #b0b0b0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h2 {
+  /* Headings remain slightly brighter for hierarchy */
+  color: #e0e0e0;
+  font-weight: 400;
+  font-size: 1.2rem;
+}
+
 #root {
-  color: red;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+}
+
+.episode-card {
+  border: 1px solid #333;
+  background-color: #121212;
+  width: 300px;
+  padding: 20px;
+  border-radius: 4px;
+}
+
+.episode-card img {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+/* Specific styling for the summary to make it look elegant */
+.episode-summary {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #999; /* Softer gray for summary text */
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #666; /* Very subtle footer text */
+}
+
+footer a {
+  color: #888;
+  text-decoration: none;
 }
