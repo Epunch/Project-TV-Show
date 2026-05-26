@@ -1,5 +1,3 @@
-//You can edit ALL of the code here
-function setup() {
 // This function runs automatically when the browser finishes loading the page
 function setup() {
   const allEpisodes = getAllEpisodes();
