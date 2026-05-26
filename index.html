@@ -3,17 +3,30 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- 1. Title personalized here -->
     <title>TV Show Project | Meysam Razagh (Epunch)</title>
     <link href="style.css" rel="stylesheet" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon" />
   </head>
 
   <body>
-    <!-- This container will hold all our dynamically generated cards -->
-    <div id="root"></div>
+    <header class="hero-section">
+      <div class="logo-container">
+        <img
+          src="assets/Meyflix-Banner-Logo.png"
+          alt="Meyflix Logo"
+          class="logo"
+        />
+      </div>
+      <img
+        src="https://static.tvmaze.com/uploads/images/original_untouched/1/2668.jpg"
+        alt="Game of Thrones"
+        class="hero-image"
+      />
+      <h1>Game of Thrones</h1>
+    </header>
 
-    <!-- 2. TVMaze Attribution link added here for Level 100 requirement -->
+    <main id="root"></main>
+
     <footer>
       <p>
         Data originally provided by
@@ -21,10 +34,8 @@
       </p>
     </footer>
 
-    <!-- Loads a provided function called getAllEpisodes() which returns all episodes -->
     <script src="episodes.js"></script>
 
-    <!-- Loads YOUR javascript code -->
     <script src="script.js"></script>
   </body>
 </html>
