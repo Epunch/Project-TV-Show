@@ -52,6 +52,18 @@ searchInput.addEventListener("input", handleSearch);
 function handleSearch() {
   const searchTerm = searchInput.value;
   console.log(searchTerm);
+
+  const matchingEpisodes = allEpisodes.filter(function (episode) {
+    return (
+      episode.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      episode.summary.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+
+  makePageForEpisodes(matchingEpisodes);
+
+  const episodeCounter = document.getElementById("episode-count");
+  episodeCounter.textContent = `Showing ${matchingEpisodes.length} of ${allEpisodes.length} episodes`;
 }
 
 window.onload = setup;
