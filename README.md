@@ -1,4 +1,6 @@
 # TV Show Project
+<img width="1445" height="483" alt="105E7BE9-47BD-44A3-B999-067D6DD6E903" src="https://github.com/user-attachments/assets/20df23c4-f6cd-474b-acfc-ef265c239ca9" />
+
 
 One of the most powerful things a software engineer can do is take some data and make it easy for people to understand.
 
