@@ -3,6 +3,9 @@ const allEpisodes = getAllEpisodes();
 // This function runs automatically when the browser finishes loading the page
 function setup() {
   makePageForEpisodes(allEpisodes);
+
+  // populate episodes via dropdown menu
+  populateEpisodeSelector();
 }
 
 // This function takes an array of episodes as input and displays them inside the root element
@@ -20,6 +23,9 @@ function makePageForEpisodes(episodeList) {
     const paddedSeason = String(episode.season).padStart(2, "0");
     const paddedEpisode = String(episode.number).padStart(2, "0");
     const episodeCode = `S${paddedSeason}E${paddedEpisode}`;
+
+    // Adding an ID for every card that is created
+    cardElement.id = episodeCode;
 
     // Create the title heading element
     const titleElement = document.createElement("h2");
@@ -46,13 +52,16 @@ function makePageForEpisodes(episodeList) {
   });
 }
 
+// Grab the search input and listen for every keystroke the user types
 const searchInput = document.getElementById("search-input");
 searchInput.addEventListener("input", handleSearch);
 
+// This function filters episodes based on what the user has typed in the search box
+// It checks both the episode name and summary, and is case-insensitive
 function handleSearch() {
   const searchTerm = searchInput.value;
-  console.log(searchTerm);
 
+  // Keep only episodes where the name or summary contains the search term
   const matchingEpisodes = allEpisodes.filter(function (episode) {
     return (
       episode.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -60,10 +69,49 @@ function handleSearch() {
     );
   });
 
+  // Re-render the page with only the matching episodes
   makePageForEpisodes(matchingEpisodes);
 
+  // Update the episode counter to show how many results matched
   const episodeCounter = document.getElementById("episode-count");
   episodeCounter.textContent = `Showing ${matchingEpisodes.length} of ${allEpisodes.length} episodes`;
+}
+
+// This function fills the episode dropdown with one option per episode
+// Each option displays the episode code and name (e.g. "S01E01 - Winter is Coming")
+function populateEpisodeSelector() {
+  const selector = document.getElementById("episode-selector");
+
+  allEpisodes.forEach(function (episode) {
+    const option = document.createElement("option");
+
+    // Format the episode code the same way as in makePageForEpisodes
+    const paddedSeason = String(episode.season).padStart(2, "0");
+    const paddedEpisode = String(episode.number).padStart(2, "0");
+    const episodeCode = `S${paddedSeason}E${paddedEpisode}`;
+
+    // The value matches the card's id so we can scroll directly to it
+    option.value = episodeCode;
+    option.textContent = `${episodeCode} - ${episode.name}`;
+    selector.appendChild(option);
+  });
+}
+
+// Grab the episode selector and listen for when the user picks an option
+const episodeSelector = document.getElementById("episode-selector");
+episodeSelector.addEventListener("change", handleSelectorChange);
+
+// This function scrolls the page smoothly to the selected episode card
+// It uses the episode code as both the option value and the card's id to find the right element
+function handleSelectorChange() {
+  const selectedCode = episodeSelector.value;
+
+  // If the user selects the default placeholder option, do nothing
+  if (selectedCode === "") return;
+
+  // Find the card with the matching id and scroll it into view
+  const targetCard = document.getElementById(selectedCode);
+  targetCard.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
 window.onload = setup;
