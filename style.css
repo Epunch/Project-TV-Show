@@ -14,6 +14,7 @@ h2 {
   color: #e0e0e0;
   font-weight: 400;
   font-size: 1.2rem;
+  min-height: 3em; /* Reserve space for up to 2 lines so images align across cards */
 }
 
 #root {
@@ -74,15 +75,30 @@ footer a {
   border-bottom: 4px solid #333;
 }
 
+.hero-text {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  z-index: 1; /* Ensures everything stays on top of the image */
+  max-width: 50%;
+}
+
 .hero-section h1 {
-  margin: -100px 0 20px 0; /* Pushes the title partially over the image */
   font-size: 3.5rem;
   color: #e9e7e7;
   text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8);
   text-transform: uppercase;
   letter-spacing: 3px;
-  z-index: 1; /* Ensures text stays on top of the image */
+  margin-bottom: 12px;
 }
+
+.hero-summary {
+  font-size: 1.3rem;
+  color: #e0e0e0;
+  text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.8);
+  line-height: 1.6;
+}
+
 /* Container for the logo, fixed at the top-left */
 .logo-container {
   position: absolute;
@@ -95,4 +111,42 @@ footer a {
 .logo {
   width: 400px;
   height: auto;
+}
+
+/* Controls bar — search input and episode counter */
+#controls {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background-color: #0a0a0a;
+  border-bottom: 1px solid #333;
+}
+
+#search-input {
+  width: 100%;
+  max-width: 300px;
+  padding: 10px 16px;
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 4px;
+  color: #e0e0e0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 1rem;
+  font-weight: 300;
+}
+
+#search-input::placeholder {
+  color: #555;
+}
+
+#search-input:focus {
+  outline: none;
+  border-color: #666;
+}
+
+#episode-count {
+  color: #666;
+  font-size: 0.9rem;
 }

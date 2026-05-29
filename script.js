@@ -1,6 +1,7 @@
+const allEpisodes = getAllEpisodes();
+
 // This function runs automatically when the browser finishes loading the page
 function setup() {
-  const allEpisodes = getAllEpisodes();
   makePageForEpisodes(allEpisodes);
 }
 
@@ -43,6 +44,26 @@ function makePageForEpisodes(episodeList) {
     // Append the complete card into the root div on the web page
     rootElem.appendChild(cardElement);
   });
+}
+
+const searchInput = document.getElementById("search-input");
+searchInput.addEventListener("input", handleSearch);
+
+function handleSearch() {
+  const searchTerm = searchInput.value;
+  console.log(searchTerm);
+
+  const matchingEpisodes = allEpisodes.filter(function (episode) {
+    return (
+      episode.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      episode.summary.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+
+  makePageForEpisodes(matchingEpisodes);
+
+  const episodeCounter = document.getElementById("episode-count");
+  episodeCounter.textContent = `Showing ${matchingEpisodes.length} of ${allEpisodes.length} episodes`;
 }
 
 window.onload = setup;
