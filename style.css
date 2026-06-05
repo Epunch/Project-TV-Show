@@ -125,6 +125,34 @@ footer a {
   background: linear-gradient(to bottom, #0a0a0a, #000);
 }
 
+#show-select {
+  width: 100%;
+  max-width: 250px;
+  padding: 10px 16px;
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 4px;
+  color: #e0e0e0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 1rem;
+  font-weight: 300;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+#show-select:focus {
+  outline: none;
+  border-color: #666;
+}
+
+#controls label {
+  color: #888;
+  font-size: 0.9rem;
+}
+
 #search-input {
   width: 100%;
   max-width: 300px;
