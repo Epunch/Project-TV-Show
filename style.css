@@ -75,11 +75,12 @@ footer a {
 }
 
 .hero-text {
-  position: absolute;
-  bottom: 40px;
-  left: 40px;
-  z-index: 1; /* Ensures everything stays on top of the image */
+  position: relative;
+  margin-top: -250px; /* Adjust this value to position the text as needed */
+  margin-left: 50px;
+  z-index: 1;
   max-width: 50%;
+  padding-bottom: 20px;
 }
 
 .hero-section h1 {
