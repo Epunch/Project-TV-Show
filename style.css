@@ -63,6 +63,7 @@ footer a {
   flex-direction: column; /* This keeps the title under the image */
   align-items: center; /* Centers everything horizontally */
   width: 100%;
+  position: relative; /* This allows the text to be positioned over the image */
 }
 
 .hero-image {
@@ -75,9 +76,9 @@ footer a {
 }
 
 .hero-text {
-  position: relative;
-  margin-top: -250px; /* Adjust this value to position the text as needed */
-  margin-left: 50px;
+  position: absolute; /* Position the text over the image */
+  bottom: 60px; /* Adjust this value to move the text up or down */
+  left: 50px; /* Adjust this value to move the text left or right */
   z-index: 1;
   max-width: 50%;
   padding-bottom: 20px;
