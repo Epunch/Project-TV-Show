@@ -1,72 +1,61 @@
-// Global variable to store episodes
+// Global variable to store all fetched episodes
 let allEpisodes = [];
 
-// 1. First, define the functions that do the UI work (makePageForEpisodes, handleSearch, etc.)
-// Because these are defined first, fetchEpisodes can find them easily.
+// 1. Define the functions responsible for updating the UI
+// These are declared first so the fetch function can utilize them.
 
 function makePageForEpisodes(episodeList) {
   const rootElem = document.getElementById("root");
-  rootElem.innerHTML = "";
+  rootElem.innerHTML = ""; // Clear existing content
 
-  // Iterate over each episode to build the UI dynamically
   episodeList.forEach((episode) => {
-    // Create a semantic article tag for each episode card (Good for Accessibility)
     const cardElement = document.createElement("article");
     cardElement.classList.add("episode-card");
 
+    // Format the season and episode numbers to have leading zeros
     const paddedSeason = String(episode.season).padStart(2, "0");
     const paddedEpisode = String(episode.number).padStart(2, "0");
     const episodeCode = `S${paddedSeason}E${paddedEpisode}`;
 
-    // Adding an ID for every card that is created
     cardElement.id = episodeCode;
 
-    // Create the title heading element
     const titleElement = document.createElement("h2");
     titleElement.textContent = `${episode.name} - ${episodeCode}`;
 
-    // Create the image element
     const imageElement = document.createElement("img");
-    imageElement.src = episode.image.medium;
+    imageElement.src = episode.image ? episode.image.medium : "";
     imageElement.alt = `Screenshot from the episode: ${episode.name}`;
 
-    // Create a container for the summary text
     const summaryElement = document.createElement("div");
     summaryElement.classList.add("episode-summary");
-    // Using innerHTML here because the API data already includes safe HTML paragraph tags
     summaryElement.innerHTML = episode.summary;
 
+    // Append all elements to the card, then the card to the root container
     cardElement.appendChild(titleElement);
     cardElement.appendChild(imageElement);
     cardElement.appendChild(summaryElement);
 
-    // Append the complete card into the root div on the web page
     rootElem.appendChild(cardElement);
   });
 }
 
-// This function fills the episode dropdown with one option per episode
-// Each option displays the episode code and name (e.g. "S01E01 - Winter is Coming")
 function populateEpisodeSelector() {
   const selector = document.getElementById("episode-selector");
-  selector.innerHTML = ""; // Clear existing options
+  selector.innerHTML = ""; // Clear existing dropdown options
 
   allEpisodes.forEach(function (episode) {
     const option = document.createElement("option");
-
-    // Format the episode code the same way as in makePageForEpisodes
     const paddedSeason = String(episode.season).padStart(2, "0");
     const paddedEpisode = String(episode.number).padStart(2, "0");
     const episodeCode = `S${paddedSeason}E${paddedEpisode}`;
 
-    // The value matches the card's id so we can scroll directly to it
     option.value = episodeCode;
     option.textContent = `${episodeCode} - ${episode.name}`;
     selector.appendChild(option);
   });
 }
 
-// 2. Define the Fetch function
+// 2. Define the asynchronous function to fetch data from the API
 async function fetchEpisodes() {
   const rootElem = document.getElementById("root");
   rootElem.innerHTML = "<p>Loading episodes, please wait...</p>";
@@ -78,27 +67,45 @@ async function fetchEpisodes() {
       throw new Error(`Error: ${response.status}`);
     }
 
-    // Assign the fetched data to our global variable
+    // Parse JSON data and assign it to the global variable
     allEpisodes = await response.json();
 
-    // Now that we have data, render the UI
+    // Render the initial UI with the retrieved data
     makePageForEpisodes(allEpisodes);
     populateEpisodeSelector();
   } catch (error) {
-    // This part handles the error shown in "Screenshot 2026-06-01 at 5.07.00 PM.png"
+    // Handle potential fetch errors
     rootElem.innerHTML = `<p style="color: red;">Failed to load episodes: ${error.message}</p>`;
   }
 }
 
-// 3. Define the Search and Select handlers (These will use the updated allEpisodes)
+// 3. Define the handlers for the search input and dropdown selector
 function handleSearch() {
-  const searchTerm = document.getElementById("search-input").value;
+  const searchTerm = document
+    .getElementById("search-input")
+    .value.toLowerCase();
+
   const matchingEpisodes = allEpisodes.filter(function (episode) {
+    // Generate the episode code in lowercase for matching (e.g., "s01e01")
+    const paddedSeason = String(episode.season).padStart(2, "0");
+    const paddedEpisode = String(episode.number).padStart(2, "0");
+    const episodeCode = `s${paddedSeason}e${paddedEpisode}`;
+
+    // Remove HTML tags from the summary to ensure accurate text matching
+    const cleanSummary = episode.summary
+      ? episode.summary.replace(/<[^>]*>/g, "").toLowerCase()
+      : "";
+    const name = episode.name ? episode.name.toLowerCase() : "";
+
+    // Check if the search input exists in the episode's name, summary, or formatted code
     return (
-      episode.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      episode.summary.toLowerCase().includes(searchTerm.toLowerCase())
+      name.includes(searchTerm) ||
+      cleanSummary.includes(searchTerm) ||
+      episodeCode.includes(searchTerm)
     );
   });
+
+  // Update the UI with the filtered results
   makePageForEpisodes(matchingEpisodes);
   document.getElementById("episode-count").textContent =
     `Showing ${matchingEpisodes.length} of ${allEpisodes.length} episodes`;
@@ -106,16 +113,17 @@ function handleSearch() {
 
 function handleSelectorChange() {
   const selectedCode = document.getElementById("episode-selector").value;
-  if (selectedCode === "") return;
+  if (selectedCode === "") return; // Do nothing if the default option is selected
+
   const targetCard = document.getElementById(selectedCode);
   targetCard.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
-// 4. Add Event Listeners
+// 4. Attach event listeners to the input fields
 document.getElementById("search-input").addEventListener("input", handleSearch);
 document
   .getElementById("episode-selector")
   .addEventListener("change", handleSelectorChange);
 
-// 5. Initialize the app
+// 5. Initialize the application when the window loads
 window.onload = fetchEpisodes;
