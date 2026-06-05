@@ -1,5 +1,8 @@
 // Global variable to store all fetched episodes
 let allEpisodes = [];
+let allShows = [];
+let currentShowId = null;
+const cache = new Map();
 
 // 1. Define the functions responsible for updating the UI
 // These are declared first so the fetch function can utilize them.
@@ -56,25 +59,37 @@ function populateEpisodeSelector() {
 }
 
 // 2. Define the asynchronous function to fetch data from the API
-async function fetchEpisodes() {
+async function fetchEpisodes(showId) {
   const rootElem = document.getElementById("root");
   rootElem.innerHTML = "<p>Loading episodes, please wait...</p>";
 
+  const url = `https://api.tvmaze.com/shows/${showId}/episodes`;
+
+  // Return cached data if available (requirement 6)
+  if (cache.has(url)) {
+    allEpisodes = cache.get(url);
+    makePageForEpisodes(allEpisodes);
+    populateEpisodeSelector();
+    document.getElementById("episode-count").textContent =
+      `Showing ${allEpisodes.length} of ${allEpisodes.length} episodes`;
+    return;
+  }
+
   try {
-    const response = await fetch("https://api.tvmaze.com/shows/82/episodes");
+    const response = await fetch(url);
 
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`);
     }
 
-    // Parse JSON data and assign it to the global variable
     allEpisodes = await response.json();
+    cache.set(url, allEpisodes); // Store in cache
 
-    // Render the initial UI with the retrieved data
     makePageForEpisodes(allEpisodes);
     populateEpisodeSelector();
+    document.getElementById("episode-count").textContent =
+      `Showing ${allEpisodes.length} of ${allEpisodes.length} episodes`;
   } catch (error) {
-    // Handle potential fetch errors
     rootElem.innerHTML = `<p style="color: red;">Failed to load episodes: ${error.message}</p>`;
   }
 }
@@ -119,11 +134,91 @@ function handleSelectorChange() {
   targetCard.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
+// Fetch all shows from the API
+async function fetchShows() {
+  const url = "https://api.tvmaze.com/shows";
+
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status}`);
+    }
+  
+    const shows = await response.json();
+    cache.set(url, shows); // Cache the shows data
+    allShows = shows;
+    populateShowSelector(shows);
+  } catch (error) {
+    console.error("Failed to fetch shows:", error);
+  }
+}
+
+// Populate the show selector dropdown (sorted alphabetically, case-insensitive)
+function populateShowSelector(shows) {
+  const selector = document.getElementById("show-select");
+  selector.innerHTML = '<option value="">-- Select a show --</option>';
+
+  // Sort alphabetically, case-insensitive (requirement 5)
+  const sorted = [...shows].sort((a, b) =>
+    a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+  );
+
+  sorted.forEach((show) => {
+    const option = document.createElement("option");
+    option.value = show.id;
+    option.textContent = show.name;
+    selector.appendChild(option);
+  });
+}
+
+// Handle when a user selects a show from the dropdown
+function handleShowChange() {
+  const selectedShowId = document.getElementById("show-select").value;
+  if (!selectedShowId) return;
+
+  currentShowId = selectedShowId;
+
+  // Find the selected show to update the hero
+  const selectedShow = allShows.find((show) => show.id == selectedShowId);
+
+  // Reset search and episode selector
+  document.getElementById("search-input").value = "";
+  document.getElementById("episode-selector").innerHTML =
+    '<option value="">Select an episode...</option>';
+
+  // Update the hero and fetch episodes
+  updateHero(selectedShow);
+  fetchEpisodes(selectedShowId);
+}
+
+// Update the hero section with the selected show's info
+function updateHero(show) {
+  const heroImage = document.querySelector(".hero-image");
+  const heroTitle = document.querySelector(".hero-section h1");
+  const heroSummary = document.querySelector(".hero-summary");
+
+  heroImage.src = show.image
+    ? show.image.original
+    : "https://static.tvmaze.com/uploads/images/original_untouched/1/2668.jpg";
+  heroImage.alt = show.name;
+  heroTitle.textContent = show.name;
+
+  // Strip HTML tags from summary
+  heroSummary.textContent = show.summary
+    ? show.summary.replace(/<[^>]*>/g, "")
+    : "No summary available.";
+}
+
 // 4. Attach event listeners to the input fields
 document.getElementById("search-input").addEventListener("input", handleSearch);
 document
   .getElementById("episode-selector")
   .addEventListener("change", handleSelectorChange);
 
+document
+  .getElementById("show-select")
+  .addEventListener("change", handleShowChange);
+
 // 5. Initialize the application when the window loads
-window.onload = fetchEpisodes;
+window.onload = fetchShows;
