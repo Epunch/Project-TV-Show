@@ -63,6 +63,7 @@ footer a {
   flex-direction: column; /* This keeps the title under the image */
   align-items: center; /* Centers everything horizontally */
   width: 100%;
+  position: relative; /* This allows the text to be positioned over the image */
 }
 
 .hero-image {
@@ -75,9 +76,9 @@ footer a {
 }
 
 .hero-text {
-  position: relative;
-  margin-top: -250px; /* Adjust this value to position the text as needed */
-  margin-left: 50px;
+  position: absolute; /* Position the text over the image */
+  bottom: 60px; /* Adjust this value to move the text up or down */
+  left: 50px; /* Adjust this value to move the text left or right */
   z-index: 1;
   max-width: 50%;
   padding-bottom: 20px;
@@ -123,6 +124,34 @@ footer a {
   max-width: 1320px;
   margin: 0 auto;
   background: linear-gradient(to bottom, #0a0a0a, #000);
+}
+
+#show-select {
+  width: 100%;
+  max-width: 250px;
+  padding: 10px 16px;
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 4px;
+  color: #e0e0e0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 1rem;
+  font-weight: 300;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+#show-select:focus {
+  outline: none;
+  border-color: #666;
+}
+
+#controls label {
+  color: #888;
+  font-size: 0.9rem;
 }
 
 #search-input {
