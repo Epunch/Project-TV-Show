@@ -210,3 +210,92 @@ footer a {
 #episode-selector option[value=""] {
   color: #555;
 }
+/* Update this block in style.css to include #show-search */
+#search-input,
+#show-search {
+  width: 100%;
+  max-width: 300px;
+  padding: 10px 16px;
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 4px;
+  color: #e0e0e0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 1rem;
+  font-weight: 300;
+}
+
+#search-input::placeholder,
+#show-search::placeholder {
+  color: #555;
+}
+
+#search-input:focus,
+#show-search:focus {
+  outline: none;
+  border-color: #666;
+}
+/* Ensure inputs and button share the same design */
+#search-input,
+#show-search,
+#back-to-shows-btn {
+  padding: 10px 16px;
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+#back-to-shows-btn {
+  cursor: pointer;
+}
+/* Layout alignment to make cards horizontal rows without changing colors */
+.show-horizontal-row {
+  display: block !important;
+  width: 100% !important;
+  box-sizing: border-box;
+  margin-bottom: 25px;
+  padding: 20px;
+}
+
+.show-title-top {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.8rem;
+}
+
+.show-content-flex {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.show-image-container {
+  flex: 0 0 150px;
+}
+
+.show-image-container img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.show-summary-container {
+  flex: 2 1 300px;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.show-metadata-container {
+  flex: 1 1 200px;
+  padding: 10px;
+  border-left: 1px solid #333; /* border color fits dark theme */
+  min-width: 200px;
+}
+
+.show-metadata-container p {
+  margin: 6px 0;
+}
