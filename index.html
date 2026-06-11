@@ -36,12 +36,18 @@
     </header>
 
     <section id="controls">
+      <button id="back-to-shows-btn" style="display: none">
+        Back to All Shows
+      </button>
+
+      <input type="text" id="show-search" placeholder="Search Shows..." />
+
       <label for="show-select">Show:</label>
       <select id="show-select">
-        <option value="">Select a show...</option>
+        <option value="">-- Select a show --</option>
       </select>
+
       <input type="text" id="search-input" placeholder="Search Episodes..." />
-      <p id="episode-count"></p>
 
       <select id="episode-selector">
         <option value="">Select an episode...</option>
@@ -57,7 +63,6 @@
       </p>
     </footer>
 
-    <!-- The external episodes.js file was removed, and defer was added to ensure the DOM is loaded first -->
     <script src="script.js" defer></script>
   </body>
 </html>
