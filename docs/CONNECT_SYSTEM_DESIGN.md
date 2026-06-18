@@ -2,7 +2,7 @@
 
 ## The Problem
 
-The current "Visit Connect" button is buried in the sidebar and easy to miss.
+The current Visit Connect button is buried in the sidebar and easy to miss.
 The connect system exists but feels passive — players don't feel the pull of
 buying bulk because there's no drama around it.
 
