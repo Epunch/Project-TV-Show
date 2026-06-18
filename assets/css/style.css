@@ -247,10 +247,20 @@ body {
 }
 
 /* Market table column widths (scoped so inventory table is unaffected) */
-.market-table .drug-name    { width: 24%; }
-.market-table .drug-price   { width: 28%; white-space: nowrap; }
-.market-table .drug-buy-price { width: 28%; }
-.market-table .drug-actions { width: 1%; white-space: nowrap; }
+.market-table .drug-name {
+  width: 24%;
+}
+.market-table .drug-price {
+  width: 28%;
+  white-space: nowrap;
+}
+.market-table .drug-buy-price {
+  width: 28%;
+}
+.market-table .drug-actions {
+  width: 1%;
+  white-space: nowrap;
+}
 
 /* ── Log ──────────────────────────────────────────────────────────────────────────── */
 .log-list {

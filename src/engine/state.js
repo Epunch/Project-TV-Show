@@ -79,10 +79,10 @@ export function createInitialState(config = {}) {
 
   // Build connect status map (realism mode)
   const connectStatus = {};
-  const connectTrust = {};   // trust tier (0–3) per connect
+  const connectTrust = {}; // trust tier (0–3) per connect
   const connectCooldown = {}; // day number when cooldown expires (0 = available)
-  const connectKnown = {};    // has the player ever encountered this connect?
-  const connectBurnt = {};    // connect permanently gone (arrested with their product)
+  const connectKnown = {}; // has the player ever encountered this connect?
+  const connectBurnt = {}; // connect permanently gone (arrested with their product)
   if (isRealism) {
     for (const c of CONNECTS) {
       connectStatus[c.id] = {
@@ -175,10 +175,10 @@ export function createInitialState(config = {}) {
     // ── Realism mode state ──────────────────────────────────────────────────
     reputation: 0,
     connectStatus,
-    connectTrust,        // { [connectId]: 0|1|2|3 }
-    connectCooldown,     // { [connectId]: dayNumber } — available when day >= value
-    connectKnown,        // { [connectId]: bool } — ever encountered?
-    connectBurnt,        // { [connectId]: bool } — permanently gone?
+    connectTrust, // { [connectId]: 0|1|2|3 }
+    connectCooldown, // { [connectId]: dayNumber } — available when day >= value
+    connectKnown, // { [connectId]: bool } — ever encountered?
+    connectBurnt, // { [connectId]: bool } — permanently gone?
     boroughHeat,
     supplyEvents,
     favourCompleted: false, // Tommy Bags unlock

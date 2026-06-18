@@ -5,11 +5,7 @@
 import { DRUGS } from "../data/drugs.js";
 import { GAME_CONSTANTS } from "../data/constants.js";
 import { currentLoad } from "./state.js";
-import {
-  addSellRep,
-  addBuyRep,
-  penaliseRep,
-} from "./reputation.js";
+import { addSellRep, addBuyRep, penaliseRep } from "./reputation.js";
 import { getStreetBuyPrice } from "./market.js";
 import { fmtMoney, fmtWeight } from "../data/locale.js";
 
@@ -265,17 +261,22 @@ export function buyBandages(state) {
  */
 export function buyFromConnect(state, connect, offer) {
   if (!state.isRealism) return fail("Connect buying is only in Realism mode.");
-  if (state.connectBurnt?.[connect.id]) return fail(`${connect.name} is burnt. You're done.`);
+  if (state.connectBurnt?.[connect.id])
+    return fail(`${connect.name} is burnt. You're done.`);
 
   const { drugId, quantity, unitPrice, realPurity } = offer;
   const totalCost = unitPrice * quantity;
 
   if (totalCost > state.cash)
-    return fail(`Not enough cash. Need ${fmtMoney(totalCost)}, have ${fmtMoney(state.cash)}.`);
+    return fail(
+      `Not enough cash. Need ${fmtMoney(totalCost)}, have ${fmtMoney(state.cash)}.`,
+    );
 
   const spaceLeft = state.maxHold - currentLoad(state);
   if (quantity > spaceLeft)
-    return fail(`Not enough coat space. Need ${quantity} oz, have ${spaceLeft} oz.`);
+    return fail(
+      `Not enough coat space. Need ${quantity} oz, have ${spaceLeft} oz.`,
+    );
 
   const drug = DRUGS.find((d) => d.id === drugId);
   if (!drug) return fail("Unknown drug.");
@@ -310,21 +311,27 @@ export function buyFromConnect(state, connect, offer) {
 
   // Set cooldown (can't encounter same connect for N days)
   if (state.connectCooldown) {
-    state.connectCooldown[connect.id] = state.day + GAME_CONSTANTS.CONNECT_COOLDOWN_DAYS;
+    state.connectCooldown[connect.id] =
+      state.day + GAME_CONSTANTS.CONNECT_COOLDOWN_DAYS;
   }
 
   // Add reputation
   addBuyRep(state, quantity);
 
   // Borough heat spike
-  if (state.boroughHeat && state.boroughHeat[connect.locationId] !== undefined) {
+  if (
+    state.boroughHeat &&
+    state.boroughHeat[connect.locationId] !== undefined
+  ) {
     state.boroughHeat[connect.locationId] = Math.min(
       1,
       state.boroughHeat[connect.locationId] + (connect.heatSpike ?? 8) / 100,
     );
   }
 
-  const steppedNote = offer.isSteppedOn ? " [product stepped-on — lower purity than advertised]" : "";
+  const steppedNote = offer.isSteppedOn
+    ? " [product stepped-on — lower purity than advertised]"
+    : "";
   return ok(
     `Bought ${fmtWeight(quantity, true)} of ${drug.name} from ${connect.name} at ${fmtMoney(unitPrice)}/oz (${realPurity}% pure). Total: ${fmtMoney(totalCost)}.${steppedNote}`,
   );

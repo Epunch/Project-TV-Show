@@ -120,16 +120,16 @@ export const GAME_CONSTANTS = {
 
   // ── Realism: Connect encounter system ─────────────────────────────────────
   // Connects find the player via travel — there is no "Visit Connect" button.
-  CONNECT_ENCOUNTER_BASE: 0.15,         // 15% base chance per travel
-  CONNECT_ENCOUNTER_REP_MAX: 0.20,      // reputation adds up to +20% chance
-  CONNECT_ENCOUNTER_HEAT_MAX: 0.10,     // high heat reduces chance by up to -10%
-  CONNECT_ENCOUNTER_MIN_DAY: 10,        // no encounters before day 10
-  CONNECT_COOLDOWN_DAYS: 3,             // days before same connect can appear again
+  CONNECT_ENCOUNTER_BASE: 0.15, // 15% base chance per travel
+  CONNECT_ENCOUNTER_REP_MAX: 0.2, // reputation adds up to +20% chance
+  CONNECT_ENCOUNTER_HEAT_MAX: 0.1, // high heat reduces chance by up to -10%
+  CONNECT_ENCOUNTER_MIN_DAY: 10, // no encounters before day 10
+  CONNECT_COOLDOWN_DAYS: 3, // days before same connect can appear again
   // Trust tier progression (index = tier level 0–3)
-  CONNECT_TIER_REP: [0, 15, 35, 60],   // min rep to access each tier
+  CONNECT_TIER_REP: [0, 15, 35, 60], // min rep to access each tier
   CONNECT_TIER_LOT_OZ: [10, 25, 50, 100], // lot size in oz per tier
   CONNECT_TIER_DISCOUNT: [0.15, 0.25, 0.35, 0.45], // fraction off street price
-  CONNECT_TIER_BAD_DEAL: [0.10, 0.05, 0.02, 0.00], // chance product is stepped-on
+  CONNECT_TIER_BAD_DEAL: [0.1, 0.05, 0.02, 0.0], // chance product is stepped-on
   CONNECT_BAD_DEAL_PURITY_PENALTY: 25, // actual purity is this many % lower when bad deal
-  CONNECT_TRUST_MAX: 3,                // highest trust tier
+  CONNECT_TRUST_MAX: 3, // highest trust tier
 };

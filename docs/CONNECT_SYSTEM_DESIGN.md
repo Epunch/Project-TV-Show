@@ -34,6 +34,7 @@ There's always a catch.
 When you travel to a borough, there's a % chance a connect encounter fires.
 
 **Chance formula:**
+
 ```
 base = 15%
 + reputation bonus  (up to +20% at max rep)
@@ -70,23 +71,27 @@ A connect approaches with a specific drug, quantity and price:
 ### 3. Restrictions & Risk (the "catch")
 
 #### A — Carry Weight
+
 Bulk lots are large. Taking a 50 oz deal when your coat only holds 30 oz means
 you need stash space. If you can't fit it, you can't take it.
 
 #### B — Heat Spike
+
 Every bulk buy raises borough heat by a fixed amount (e.g. +8 heat).
 A connect deal is a larger transaction — more eyes on it.
 High heat = more police encounters next travel.
 
 #### C — Cash Upfront
+
 No credit. No negotiation. Full cash required at the moment of the offer.
 Miss the cash, miss the deal. (Vinnie won't loan for this.)
 
 #### D — Loyalty / Trust Tier
+
 Each connect has a trust level (0–3):
 
 | Tier | Unlocked at rep | Lot size | Discount |
-|------|----------------|----------|----------|
+| ---- | --------------- | -------- | -------- |
 | 0    | Rep 0           | 10 oz    | 15% off  |
 | 1    | Rep 15          | 25 oz    | 25% off  |
 | 2    | Rep 35          | 50 oz    | 35% off  |
@@ -96,11 +101,13 @@ Trust increases by 1 each time you successfully buy from a connect.
 Trust resets to 0 if you get arrested in their borough (you talked).
 
 #### E — Rivalry / Exclusivity
+
 Each connect specialises in 1–2 drugs. They won't offer anything else.
 Two connects in the same borough are rivals — using one locks out the other
 for 5 days.
 
 #### F — Bad Deal Risk
+
 Rarely (10% chance), the connect has "stepped-on" product — purity is
 secretly 20–40% lower than advertised. You only find out when you try to sell.
 This models the real risk of buying from unknown supply chains.
@@ -110,16 +117,16 @@ Higher trust tier = lower bad deal chance (5% → 2% → 1% → 0%).
 
 ### 4. Connect Roster (8 connects, one per borough)
 
-| Name       | Borough       | Specialty         |
-|------------|---------------|-------------------|
-| Ghost      | Bronx         | Heroin, Crack     |
-| La Reina   | Brooklyn      | Cocaine, Molly    |
-| Jimmy Two  | Queens        | Weed, PCP         |
-| The Greek  | Manhattan     | Cocaine, LSD      |
-| Sal         | Staten Island | Heroin, Adderall  |
-| Yung B     | Yonkers       | Crack, Shrooms    |
-| El Primo   | Newark        | Cocaine, Weed     |
-| Dex        | Jersey City   | Molly, Speed      |
+| Name      | Borough       | Specialty        |
+| --------- | ------------- | ---------------- |
+| Ghost     | Bronx         | Heroin, Crack    |
+| La Reina  | Brooklyn      | Cocaine, Molly   |
+| Jimmy Two | Queens        | Weed, PCP        |
+| The Greek | Manhattan     | Cocaine, LSD     |
+| Sal       | Staten Island | Heroin, Adderall |
+| Yung B    | Yonkers       | Crack, Shrooms   |
+| El Primo  | Newark        | Cocaine, Weed    |
+| Dex       | Jersey City   | Molly, Speed     |
 
 ---
 
@@ -136,10 +143,10 @@ Higher trust tier = lower bad deal chance (5% → 2% → 1% → 0%).
 
 ### 6. Progression Feel
 
-| Days 1–10  | No connects available. Build rep through street trading.       |
-| Days 10–25 | First low-tier connects start appearing. Small lots.           |
-| Days 25–60 | Mid-tier connects. Larger lots, better margins. More risk.     |
-| Days 60+   | High-tier connects. 100 oz lots. Borough heat climbs fast.     |
+| Days 1–10 | No connects available. Build rep through street trading. |
+| Days 10–25 | First low-tier connects start appearing. Small lots. |
+| Days 25–60 | Mid-tier connects. Larger lots, better margins. More risk. |
+| Days 60+ | High-tier connects. 100 oz lots. Borough heat climbs fast. |
 
 ---
 

@@ -112,7 +112,8 @@ export function buildConnectOffer(state, connect, locationId) {
   const tierDef = connect.tiers[tier];
 
   // Pick a random drug from specialty
-  const drugId = connect.specialty[Math.floor(Math.random() * connect.specialty.length)];
+  const drugId =
+    connect.specialty[Math.floor(Math.random() * connect.specialty.length)];
   const drug = DRUGS.find((d) => d.id === drugId);
   if (!drug) return null;
 
@@ -169,7 +170,10 @@ export function rollConnectEncounter(state, locationId) {
   // Cooldown blocks encounter entirely
   if ((state.connectCooldown?.[connect.id] ?? 0) > state.day) return null;
 
-  const chance = Math.max(0, GAME_CONSTANTS.CONNECT_ENCOUNTER_BASE + repBonus - heatPenalty);
+  const chance = Math.max(
+    0,
+    GAME_CONSTANTS.CONNECT_ENCOUNTER_BASE + repBonus - heatPenalty,
+  );
   if (Math.random() > chance) return null;
 
   return buildConnectOffer(state, connect, locationId);
