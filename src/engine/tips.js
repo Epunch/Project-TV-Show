@@ -72,5 +72,5 @@ export function generateTip(state) {
     state.tipAccuracyOverride -= 1;
   }
 
-  return { text: `💡 ${text}`, isTip: true };
+  return { text: `[TIP] ${text}`, isTip: true };
 }

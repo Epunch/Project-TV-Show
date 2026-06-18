@@ -5,7 +5,8 @@
 import { DRUGS } from "../data/drugs.js";
 import { LOCATIONS } from "../data/locations.js";
 import { GAME_CONSTANTS } from "../data/constants.js";
-import { generateMarket } from "./market.js";
+import { CONNECTS } from "../data/connects.js";
+import { generateMarket, generateRealismMarket } from "./market.js";
 
 /**
  * Build a fresh zero-quantity inventory object keyed by drug id.
@@ -41,7 +42,7 @@ export function scaledRate(days) {
  *
  * @param {Object} config — game configuration
  * @param {string} config.playerName
- * @param {string} config.mode — 'classic' | 'choose-days' | 'advanced' | 'hustler'
+ * @param {string} config.mode — 'classic' | 'choose-days' | 'advanced' | 'hustler' | 'realism'
  * @param {number} [config.totalDays]
  * @param {number} [config.startingCash]
  * @param {number} [config.startingDebt]
@@ -54,15 +55,65 @@ export function scaledRate(days) {
 export function createInitialState(config = {}) {
   const mode = config.mode || "classic";
   const isHustler = mode === "hustler";
-  const days = config.totalDays ?? GAME_CONSTANTS.TOTAL_DAYS;
-  const debt = config.startingDebt ?? scaledDebt(days);
-  const rate = config.interestRate ?? scaledRate(days);
+  const isRealism = mode === "realism";
+  const days =
+    config.totalDays ??
+    (isRealism ? GAME_CONSTANTS.REALISM_TOTAL_DAYS : GAME_CONSTANTS.TOTAL_DAYS);
+  const debt =
+    config.startingDebt ??
+    (isRealism ? GAME_CONSTANTS.REALISM_STARTING_DEBT : scaledDebt(days));
+  const rate =
+    config.interestRate ??
+    (isRealism ? GAME_CONSTANTS.REALISM_INTEREST_RATE : scaledRate(days));
   const playerName = config.playerName || "Anonymous";
+  const startCash =
+    config.startingCash ??
+    (isRealism
+      ? GAME_CONSTANTS.REALISM_STARTING_CASH
+      : GAME_CONSTANTS.STARTING_CASH);
+  const startHold =
+    config.startingHold ??
+    (isRealism
+      ? GAME_CONSTANTS.REALISM_STARTING_HOLD
+      : GAME_CONSTANTS.STARTING_HOLD);
+
+  // Build connect status map (realism mode)
+  const connectStatus = {};
+  const connectTrust = {};   // trust tier (0–3) per connect
+  const connectCooldown = {}; // day number when cooldown expires (0 = available)
+  const connectKnown = {};    // has the player ever encountered this connect?
+  const connectBurnt = {};    // connect permanently gone (arrested with their product)
+  if (isRealism) {
+    for (const c of CONNECTS) {
+      connectStatus[c.id] = {
+        loyalty: 0,
+        arrestedUntil: 0,
+        noShowToday: false,
+        dailyStock: {},
+      };
+      connectTrust[c.id] = 0;
+      connectCooldown[c.id] = 0;
+      connectKnown[c.id] = false;
+      connectBurnt[c.id] = false;
+    }
+  }
+
+  // Build per-borough heat map (realism mode)
+  const boroughHeat = {};
+  if (isRealism) {
+    for (const loc of LOCATIONS) {
+      boroughHeat[loc.id] = 0;
+    }
+  }
+
+  // Build supply events map (realism mode — droughts/floods)
+  const supplyEvents = {};
 
   return {
     // ── Mode ──────────────────────────────────────────────────────────────────
     mode,
     isHustler,
+    isRealism,
 
     // ── Player ────────────────────────────────────────────────────────────────
     playerName,
@@ -76,7 +127,7 @@ export function createInitialState(config = {}) {
     locations: LOCATIONS,
 
     // ── Financials ──────────────────────────────────────────────────────────
-    cash: config.startingCash ?? GAME_CONSTANTS.STARTING_CASH,
+    cash: startCash,
     bank: 0,
     debt,
     interestRate: rate,
@@ -85,33 +136,55 @@ export function createInitialState(config = {}) {
     // ── Inventory ───────────────────────────────────────────────────────────
     stash: emptyInventory(),
     trenchCoat: emptyInventory(),
-    maxHold: config.startingHold ?? GAME_CONSTANTS.STARTING_HOLD,
+    maxHold: startHold,
+
+    // ── Inventory purity tracking (realism mode) ────────────────────────────
+    // { drugId: { qty, purity } } — weighted average purity in coat
+    coatPurity: isRealism
+      ? Object.fromEntries(DRUGS.map((d) => [d.id, 100]))
+      : {},
 
     // ── Weapons ─────────────────────────────────────────────────────────────
     guns: 0,
 
     // ── Market ──────────────────────────────────────────────────────────────
-    market: generateMarket(config.volatilityMod),
+    market: isRealism
+      ? generateRealismMarket({})
+      : generateMarket(config.volatilityMod),
 
     // ── Police / market modifiers ───────────────────────────────────────────
     policeMod: config.policeMod ?? 1,
     volatilityMod: config.volatilityMod ?? 1,
 
-    // ── Health (Hustler mode) ───────────────────────────────────────────────
-    hp: isHustler ? GAME_CONSTANTS.STARTING_HP : -1, // -1 = not used
+    // ── Health (Hustler + Realism mode) ─────────────────────────────────────
+    hp: isHustler || isRealism ? GAME_CONSTANTS.STARTING_HP : -1,
     maxHp: GAME_CONSTANTS.MAX_HP,
 
-    // ── Items (Hustler mode) ────────────────────────────────────────────────
-    items: [], // array of { id, name, icon, description, uses }
+    // ── Items (Hustler + Realism mode) ──────────────────────────────────────
+    items: [],
 
     // ── Hustler state ───────────────────────────────────────────────────────
-    hardassDeputies: 0, // grows every HARDASS_DEPUTY_INTERVAL days
-    jailDays: 0, // if > 0, skip turns
-    tipAccuracyOverride: 0, // days remaining of guaranteed-accurate tips (burner phone)
-    scannerActive: false, // true for one day after using police scanner
+    hardassDeputies: 0,
+    jailDays: 0,
+    tipAccuracyOverride: 0,
+    scannerActive: false,
 
     // ── Vinnie's job ──────────────────────────────────────────────────────────
-    vinnieJob: null, // { drugId, locationId, locationName, deadline, amount } or null
+    vinnieJob: null,
+
+    // ── Realism mode state ──────────────────────────────────────────────────
+    reputation: 0,
+    connectStatus,
+    connectTrust,        // { [connectId]: 0|1|2|3 }
+    connectCooldown,     // { [connectId]: dayNumber } — available when day >= value
+    connectKnown,        // { [connectId]: bool } — ever encountered?
+    connectBurnt,        // { [connectId]: bool } — permanently gone?
+    boroughHeat,
+    supplyEvents,
+    favourCompleted: false, // Tommy Bags unlock
+    pendingFavour: null, // { drugId, locationId, locationName, amount, deadline } or null
+    territoryTaxOwed: 0, // accumulated tax owed
+    lastSaleBoroughId: null, // track where player last sold
 
     // ── Game flow ───────────────────────────────────────────────────────────
     isOver: false,
@@ -119,9 +192,11 @@ export function createInitialState(config = {}) {
 
     // ── Log ─────────────────────────────────────────────────────────────────
     log: [
-      isHustler
-        ? `Welcome, ${playerName}. The streets are meaner here. Watch your back.`
-        : `Welcome, ${playerName}. Pay off your debt and get rich.`,
+      isRealism
+        ? `Welcome, ${playerName}. The streets are real out here. Find a connect, build your rep.`
+        : isHustler
+          ? `Welcome, ${playerName}. The streets are meaner here. Watch your back.`
+          : `Welcome, ${playerName}. Pay off your debt and get rich.`,
     ],
   };
 }

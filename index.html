@@ -218,7 +218,11 @@
           </div>
 
           <button id="btn-hustler-mode" class="btn btn-hustler intro-start">
-            🔥 HUSTLER MODE
+            HUSTLER MODE
+          </button>
+
+          <button id="btn-realism-mode" class="btn btn-realism intro-start">
+            REALISM MODE
           </button>
         </div>
       </div>
@@ -229,12 +233,11 @@
     <!-- ═══════════════════════════════════════════════════════════════════════════ -->
     <div id="hustler-info-screen" class="intro-screen hidden">
       <div class="intro-box hustler-info-box">
-        <h1 class="intro-title hustler-title">🔥 HUSTLER MODE</h1>
+        <h1 class="intro-title hustler-title">HUSTLER MODE</h1>
         <p class="intro-subtitle">THE LONG GAME — SURVIVE THE STREETS</p>
 
         <div class="hustler-features">
           <div class="hustler-feature">
-            <span class="hustler-icon">🏥</span>
             <div>
               <strong>Health System</strong>
               <p>
@@ -244,7 +247,6 @@
             </div>
           </div>
           <div class="hustler-feature">
-            <span class="hustler-icon">🚔</span>
             <div>
               <strong>Officer Hardass</strong>
               <p>
@@ -254,7 +256,6 @@
             </div>
           </div>
           <div class="hustler-feature">
-            <span class="hustler-icon">🏦</span>
             <div>
               <strong>Big Vinnie</strong>
               <p>
@@ -264,7 +265,6 @@
             </div>
           </div>
           <div class="hustler-feature">
-            <span class="hustler-icon">📱</span>
             <div>
               <strong>Street Intel</strong>
               <p>
@@ -274,7 +274,6 @@
             </div>
           </div>
           <div class="hustler-feature">
-            <span class="hustler-icon">🎲</span>
             <div>
               <strong>Street Vendor</strong>
               <p>
@@ -284,7 +283,6 @@
             </div>
           </div>
           <div class="hustler-feature">
-            <span class="hustler-icon">📅</span>
             <div>
               <strong>Day Summary</strong>
               <p>End-of-day recap so you don't miss a thing.</p>
@@ -326,6 +324,119 @@
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════════════════════ -->
+    <!--  REALISM INFO SCREEN                                                     -->
+    <!-- ═══════════════════════════════════════════════════════════════════════════ -->
+    <div id="realism-info-screen" class="intro-screen hidden">
+      <div class="intro-box realism-info-box">
+        <h1 class="intro-title realism-title">REALISM MODE</h1>
+        <p class="intro-subtitle">STREET-ACCURATE PRICES — REAL SUPPLY CHAIN</p>
+
+        <div class="hustler-features realism-features">
+          <div class="hustler-feature">
+            <div>
+              <strong>Real Pricing</strong>
+              <p>
+                Per-ounce wholesale &amp; retail prices anchored to real-world
+                street data. Thin margins — hustle smart.
+              </p>
+            </div>
+          </div>
+          <div class="hustler-feature">
+            <div>
+              <strong>Connect System</strong>
+              <p>
+                8 named dealers across the city. Find them, earn their trust,
+                buy wholesale. Each has a specialty and personality.
+              </p>
+            </div>
+          </div>
+          <div class="hustler-feature">
+            <div>
+              <strong>Purity &amp; Cutting</strong>
+              <p>
+                Every lot has a purity %. Cut product to increase volume — but
+                cut too much and buyers disappear.
+              </p>
+            </div>
+          </div>
+          <div class="hustler-feature">
+            <div>
+              <strong>Persistent Heat</strong>
+              <p>
+                Heat builds per borough and doesn't reset. High heat means more
+                police and stash raids.
+              </p>
+            </div>
+          </div>
+          <div class="hustler-feature">
+            <div>
+              <strong>Reputation</strong>
+              <p>
+                Build rep by trading volume. Higher rep unlocks better connects
+                and prices.
+              </p>
+            </div>
+          </div>
+          <div class="hustler-feature">
+            <div>
+              <strong>Territory Tax</strong>
+              <p>
+                Each borough's crew skims 2–8% off your sales. The cost of doing
+                business.
+              </p>
+            </div>
+          </div>
+          <div class="hustler-feature">
+            <div>
+              <strong>Supply Events</strong>
+              <p>
+                Droughts spike prices 2.5×. Floods crash them 50%. Adapt or lose
+                money.
+              </p>
+            </div>
+          </div>
+          <div class="hustler-feature">
+            <div>
+              <strong>Stash Raids</strong>
+              <p>
+                Your stash can be raided — chance rises with borough heat.
+                Nothing is safe.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="intro-slider-group">
+          <label class="intro-slider-label">
+            Game Length:
+            <span id="realism-days-val" class="intro-slider-val">60</span> days
+          </label>
+          <input
+            id="realism-days-slider"
+            type="range"
+            min="30"
+            max="90"
+            value="60"
+            class="intro-slider"
+          />
+          <div class="intro-preview">
+            <span>Starting Cash: <strong>$500</strong></span>
+            <span
+              >Debt: <strong>$2,000</strong> @ <strong>15%</strong>/day</span
+            >
+          </div>
+        </div>
+
+        <div class="hustler-btn-row">
+          <button id="btn-start-realism" class="btn btn-realism intro-start">
+            START REALISM MODE
+          </button>
+          <button id="btn-realism-back" class="btn btn-cancel">← BACK</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════ -->
     <!--  GAME SCREEN                                                           -->
     <!-- ═══════════════════════════════════════════════════════════════════════════ -->
     <div id="game-screen" class="hidden">
@@ -341,7 +452,7 @@
           <span class="sep">|</span>
           <span id="hold-counter">hold: 0 / 100</span>
           <span class="sep">|</span>
-          <button id="btn-theme-toggle" class="btn-theme">🌙 Dark</button>
+          <button id="btn-theme-toggle" class="btn-theme">Dark</button>
         </span>
       </header>
 
@@ -403,6 +514,18 @@
             <span class="stat-label">ITEMS</span>
             <div class="items-list" id="items-list">—</div>
           </div>
+
+          <!-- Realism stats row (Realism mode only) -->
+          <div class="realism-stats-row hidden" id="realism-stats-row">
+            <div class="stat-item">
+              <span class="stat-label">reputation</span>
+              <span class="stat-val" id="stat-rep">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">borough heat</span>
+              <span class="stat-val" id="stat-heat">0%</span>
+            </div>
+          </div>
         </section>
 
         <!-- ── CENTRE: Market + Log ────────────────────────────────────── -->
@@ -414,7 +537,8 @@
               <thead>
                 <tr>
                   <th>Drug</th>
-                  <th>Price</th>
+                  <th>Sell</th>
+                  <th>Buy</th>
                   <th></th>
                 </tr>
               </thead>
@@ -460,7 +584,7 @@
               Buy Bandages ($200)
             </button>
             <button id="btn-visit-clinic" class="btn btn-action hidden">
-              🏥 Visit Clinic ($1,000)
+              Visit Clinic ($1,000)
             </button>
           </div>
         </aside>

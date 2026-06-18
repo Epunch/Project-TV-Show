@@ -62,4 +62,74 @@ export const GAME_CONSTANTS = {
   VINNIE_JOB_REWARD_RATIO: 0.5, // Fraction of debt forgiven on success
   VINNIE_JOB_FAIL_HP: 25, // HP damage on failure
   VINNIE_JOB_FAIL_CASH: 500, // Cash stolen on failure
+
+  // ── Realism mode ───────────────────────────────────────────────────────────
+  REALISM_STARTING_CASH: 500, // Start low — you're a nobody
+  REALISM_STARTING_DEBT: 2000, // Smaller debt but steeper interest
+  REALISM_INTEREST_RATE: 0.15, // 15% daily interest
+  REALISM_TOTAL_DAYS: 60, // Default game length
+  REALISM_STARTING_HOLD: 10, // 10 oz coat capacity
+  REALISM_COAT_UPGRADE_SIZE: 5, // +5 oz per upgrade
+  REALISM_COAT_UPGRADE_COST: 300, // Cheaper per upgrade
+  REALISM_COAT_UPGRADE_MAX: 50, // Max 50 oz
+
+  // ── Realism: Connect system ────────────────────────────────────────────────
+  CONNECT_BASE_STOCK_MIN: 3, // Minimum oz a connect has per day
+  CONNECT_BASE_STOCK_MAX: 12, // Maximum oz a connect has per day
+  CONNECT_LOYALTY_DISCOUNT: 0.02, // 2% discount per loyalty level (max 10)
+  CONNECT_LOYALTY_MAX: 10, // Max loyalty level per connect
+  CONNECT_ARRESTED_CHANCE: 0.02, // 2% daily chance a connect goes dark
+  CONNECT_ARRESTED_DAYS_MIN: 3, // Min days a connect is dark
+  CONNECT_ARRESTED_DAYS_MAX: 7, // Max days a connect is dark
+
+  // ── Realism: Reputation ────────────────────────────────────────────────────
+  REP_PER_OZ_SOLD: 1, // Rep gained per oz sold on street
+  REP_PER_OZ_BOUGHT: 0.5, // Rep gained per oz bought from connect
+  REP_CUT_PENALTY: 5, // Rep lost when caught selling bad product
+  REP_FAVOUR_REWARD: 50, // Rep gained for completing a favour
+
+  // ── Realism: Heat ──────────────────────────────────────────────────────────
+  HEAT_PER_SALE: 0.02, // Heat added per oz sold in a borough
+  HEAT_PER_PURCHASE: 0.01, // Heat added per oz bought from connect
+  HEAT_DECAY_RATE: 0.05, // Heat decays 5% per day passively
+  HEAT_STASH_RAID_BASE: 0.03, // Base 3% daily raid chance
+  HEAT_STASH_RAID_SCALE: 0.1, // Each 0.1 heat adds to raid %
+
+  // ── Realism: Territory tax ─────────────────────────────────────────────────
+  TERRITORY_TAX_MIN: 0.02, // 2% minimum territory tax
+  TERRITORY_TAX_MAX: 0.08, // 8% maximum territory tax
+  TERRITORY_TAX_SKIP_CHANCE: 0.15, // Chance of trouble if you skip paying
+
+  // ── Realism: Cutting ──────────────────────────────────────────────────────
+  CUT_MIN_PURITY: 30, // Can't cut below 30% purity
+  CUT_BAD_REP_THRESHOLD: 40, // Selling below 40% = bad reputation event
+
+  // ── Realism: Supply events ────────────────────────────────────────────────
+  DROUGHT_CHANCE: 0.04, // 4% daily chance of drought per drug
+  DROUGHT_DURATION_MIN: 2, // Min days of drought
+  DROUGHT_DURATION_MAX: 4, // Max days of drought
+  DROUGHT_PRICE_MULT: 2.5, // Prices spike 2.5× during drought
+  FLOOD_CHANCE: 0.03, // 3% daily chance of flood
+  FLOOD_DURATION_MIN: 2,
+  FLOOD_DURATION_MAX: 3,
+  FLOOD_PRICE_MULT: 0.5, // Prices drop 50% during flood
+
+  // ── Realism: Tommy Bags favour ────────────────────────────────────────────
+  FAVOUR_DRUG_QTY: 5, // Deliver 5 oz of a specific drug
+  FAVOUR_DEADLINE: 5, // Days to complete
+
+  // ── Realism: Connect encounter system ─────────────────────────────────────
+  // Connects find the player via travel — there is no "Visit Connect" button.
+  CONNECT_ENCOUNTER_BASE: 0.15,         // 15% base chance per travel
+  CONNECT_ENCOUNTER_REP_MAX: 0.20,      // reputation adds up to +20% chance
+  CONNECT_ENCOUNTER_HEAT_MAX: 0.10,     // high heat reduces chance by up to -10%
+  CONNECT_ENCOUNTER_MIN_DAY: 10,        // no encounters before day 10
+  CONNECT_COOLDOWN_DAYS: 3,             // days before same connect can appear again
+  // Trust tier progression (index = tier level 0–3)
+  CONNECT_TIER_REP: [0, 15, 35, 60],   // min rep to access each tier
+  CONNECT_TIER_LOT_OZ: [10, 25, 50, 100], // lot size in oz per tier
+  CONNECT_TIER_DISCOUNT: [0.15, 0.25, 0.35, 0.45], // fraction off street price
+  CONNECT_TIER_BAD_DEAL: [0.10, 0.05, 0.02, 0.00], // chance product is stepped-on
+  CONNECT_BAD_DEAL_PURITY_PENALTY: 25, // actual purity is this many % lower when bad deal
+  CONNECT_TRUST_MAX: 3,                // highest trust tier
 };

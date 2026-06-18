@@ -77,7 +77,7 @@ export function resolveFight(state) {
     if (hasVest) {
       consumeItem(state, "bulletproof_vest");
       totalDmg = Math.max(0, totalDmg - 15);
-      messages.push("🦺 Your bulletproof vest absorbed some of the damage!");
+      messages.push("Vest absorbed some of the damage.");
     }
 
     hpLost = totalDmg;
@@ -99,7 +99,7 @@ export function resolveFight(state) {
     if (hasVest) {
       consumeItem(state, "bulletproof_vest");
       totalDmg = Math.max(0, totalDmg - 15);
-      messages.push("🦺 Your bulletproof vest absorbed some of the damage!");
+      messages.push("Vest absorbed some of the damage.");
     }
 
     hpLost = totalDmg;
@@ -125,7 +125,7 @@ export function resolveFight(state) {
   if (state.hp <= 0) {
     state.isOver = true;
     state.won = false;
-    messages.push("💀 You bled out on the street. Game over.");
+    messages.push("You bled out on the street. Game over.");
   }
 
   return { messages, drugsLost, hpLost, cashGained };
@@ -175,7 +175,7 @@ export function resolveRun(state) {
     if (hasVest) {
       consumeItem(state, "bulletproof_vest");
       totalDmg = Math.max(0, dmg - 10);
-      messages.push("🦺 Your bulletproof vest absorbed some of the damage!");
+      messages.push("Vest absorbed some of the damage.");
     }
 
     hpLost = totalDmg;
@@ -199,7 +199,7 @@ export function resolveRun(state) {
   if (state.hp <= 0) {
     state.isOver = true;
     state.won = false;
-    messages.push("💀 You collapsed in the alley. Game over.");
+    messages.push("You collapsed in the alley. Game over.");
   }
 
   return { messages, escaped, drugsLost, hpLost };

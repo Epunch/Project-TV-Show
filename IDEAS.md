@@ -429,22 +429,23 @@ day count, and clicks START.
 ### The Core Problem With Classic Mode's Prices
 
 The original Drug Wars prices are arcade fantasy:
+
 - Cocaine: $15,000–$30,000 per "unit" (no unit defined)
 - Heroin: $5,000–$14,000
 
 In reality (2024, NYC market, per gram):
-| Drug       | Wholesale (g) | Street retail (g) | Notes |
+| Drug | Wholesale (g) | Street retail (g) | Notes |
 | ---------- | ------------- | ------------------ | ----- |
-| Cocaine    | $25–$45       | $60–$120           | Pure; cut product cheaper |
-| Heroin     | $80–$180      | $150–$250          | DEA: 8–10× cocaine value |
-| Fentanyl   | $1–$5         | $30–$80            | Sold as "heroin"; deadly |
-| Meth (ice) | $3–$10        | $5–$20             | Cartels flooded market |
-| Crack      | $10–$20       | $15–$40            | Per rock (0.2–0.5g) |
-| Weed       | $3–$7         | $10–$25            | Dispensary competing |
-| MDMA/Molly | $20–$40       | $30–$80            | Per gram powder |
-| LSD        | $0.50–$2      | $5–$15             | Per tab (100µg) |
-| Shrooms    | $5–$10        | $10–$25            | Per gram |
-| Adderall   | $2–$5         | $5–$15             | Per 30mg pill |
+| Cocaine | $25–$45 | $60–$120 | Pure; cut product cheaper |
+| Heroin | $80–$180 | $150–$250 | DEA: 8–10× cocaine value |
+| Fentanyl | $1–$5 | $30–$80 | Sold as "heroin"; deadly |
+| Meth (ice) | $3–$10 | $5–$20 | Cartels flooded market |
+| Crack | $10–$20 | $15–$40 | Per rock (0.2–0.5g) |
+| Weed | $3–$7 | $10–$25 | Dispensary competing |
+| MDMA/Molly | $20–$40 | $30–$80 | Per gram powder |
+| LSD | $0.50–$2 | $5–$15 | Per tab (100µg) |
+| Shrooms | $5–$10 | $10–$25 | Per gram |
+| Adderall | $2–$5 | $5–$15 | Per 30mg pill |
 
 **Key insight:** The classic game's "unit" is best interpreted as a **small bulk lot**
 (e.g., an ounce or a bundle), not a single gram. Realism Mode makes this explicit.
@@ -469,12 +470,12 @@ End users on the street
 **In Realism Mode, this becomes:**
 
 1. **Your Connect** — A named mid-level dealer in each borough. You have to
-   *find* them first (by reputation, tips, or random encounter). Each connect
+   _find_ them first (by reputation, tips, or random encounter). Each connect
    specialises in 1–3 drugs, sells in bulk at wholesale prices, and has
    limited stock per day. Their prices fluctuate based on supply pressure.
 
 2. **Street Market** — You can still sell to random buyers on the street at
-   retail prices (existing mechanic). But *buying* from the street is now
+   retail prices (existing mechanic). But _buying_ from the street is now
    expensive (retail prices), inefficient, and attracts more police attention.
 
 3. **Stash Houses** — Each borough has a stash house you can use to store product
@@ -487,18 +488,19 @@ End users on the street
 
 Each connect has a personality that affects gameplay:
 
-| Borough    | Connect      | Specialty           | Personality trait |
-| ---------- | ------------ | ------------------- | ----------------- |
-| Bronx      | Rico         | Crack, Coke         | Reliable but pricey |
-| Brooklyn   | D-Nice       | Weed, Molly         | Best prices, flaky stock |
-| Queens     | Jin          | Meth, Fentanyl      | Strict — no credit |
-| Manhattan  | Claudette    | Coke, LSD           | Expensive; high quality |
-| Staten Is. | Tommy Bags   | Heroin, Crack       | Owes you favours |
-| Yonkers    | Manny        | Weed, Shrooms       | Paranoid; random no-shows |
-| Newark     | Lil Ray      | Meth, Adderall      | Generous but heat magnet |
-| Jersey     | The Swede    | LSD, Molly          | Rare finds; premium price |
+| Borough    | Connect    | Specialty      | Personality trait         |
+| ---------- | ---------- | -------------- | ------------------------- |
+| Bronx      | Rico       | Crack, Coke    | Reliable but pricey       |
+| Brooklyn   | D-Nice     | Weed, Molly    | Best prices, flaky stock  |
+| Queens     | Jin        | Meth, Fentanyl | Strict — no credit        |
+| Manhattan  | Claudette  | Coke, LSD      | Expensive; high quality   |
+| Staten Is. | Tommy Bags | Heroin, Crack  | Owes you favours          |
+| Yonkers    | Manny      | Weed, Shrooms  | Paranoid; random no-shows |
+| Newark     | Lil Ray    | Meth, Adderall | Generous but heat magnet  |
+| Jersey     | The Swede  | LSD, Molly     | Rare finds; premium price |
 
 Connects must be **unlocked**:
+
 - Some start available from day 1 (Bronx, Brooklyn)
 - Others require reputation (measured by total volume traded)
 - One requires completing a favour (similar to Vinnie's job mechanic)
@@ -518,11 +520,13 @@ supplyShock = borough heat × recent busts     // reduces available stock
 ```
 
 **Unit system (explicit):**
+
 - All prices are **per ounce** (28g), the standard mid-level trade unit
 - Display shows both price/oz and price/g for clarity
 - Carry capacity is in ounces (trench coat = 10 oz default)
 
 **Price modifiers:**
+
 - **Drought** event: supply drops 50%, price spikes 2–3×
 - **Flood** event: cartel shipment lands, price drops 40% for 2–3 days
 - **Bust** event: competitor taken down, raises prices in that borough
@@ -533,11 +537,13 @@ supplyShock = borough heat × recent busts     // reduces available stock
 ### 📊 The Street Economy Loop
 
 **Classic mode loop:**
+
 ```
 Buy drug → Travel → Sell drug → repeat
 ```
 
 **Realism mode loop:**
+
 ```
 Contact connect → Negotiate bulk buy → Assess quality
 → Travel to sell turf → Find buyers → Negotiate price
@@ -547,14 +553,14 @@ Contact connect → Negotiate bulk buy → Assess quality
 
 **New mechanics this requires:**
 
-| Mechanic | Description |
-| -------- | ----------- |
-| **Reputation** | Grows with volume traded. Unlocks better connects & prices. |
-| **Territory tax** | Each borough has a crew that taxes dealers (2–8% of sales). Ignore it → trouble. |
-| **Heat accumulation** | Unlike classic (resets on travel), heat now builds borough-by-borough over time. |
-| **Quality lots** | When buying, you see purity %. Affects resale price. You can cut it (more units, lower quality). |
-| **Credit system** | Trusted connects offer fronting (buy now, pay next visit). Miss payment → relationship damaged. |
-| **Stash house raids** | 3–8% daily chance per stash house, rises with borough heat. Lose stored product. |
+| Mechanic              | Description                                                                                      |
+| --------------------- | ------------------------------------------------------------------------------------------------ |
+| **Reputation**        | Grows with volume traded. Unlocks better connects & prices.                                      |
+| **Territory tax**     | Each borough has a crew that taxes dealers (2–8% of sales). Ignore it → trouble.                 |
+| **Heat accumulation** | Unlike classic (resets on travel), heat now builds borough-by-borough over time.                 |
+| **Quality lots**      | When buying, you see purity %. Affects resale price. You can cut it (more units, lower quality). |
+| **Credit system**     | Trusted connects offer fronting (buy now, pay next visit). Miss payment → relationship damaged.  |
+| **Stash house raids** | 3–8% daily chance per stash house, rises with borough heat. Lose stored product.                 |
 
 ---
 
@@ -568,6 +574,7 @@ One of the most realistic features of the street trade: **cutting product**.
 > **Risk:** if you cut too aggressively, buyers stop returning. Reputation drops.
 
 Implementation:
+
 - Each drug lot has a `purity` value (60–100%)
 - Players can cut (reduce purity, increase volume) using a slider
 - Purity is tracked and slightly affects sell price
@@ -602,6 +609,7 @@ Add to the intro screen (below Hustler Mode button):
 ```
 
 **Realism Mode info screen features:**
+
 - 📊 Real-world pricing (per oz, realistic street rates)
 - 🤝 Connect system (find named dealers per borough)
 - 💊 Quality & cutting mechanic
@@ -652,18 +660,18 @@ index.html              — Realism Mode button + info screen
 
 ### 🆚 Comparison: Classic vs Hustler vs Realism
 
-| Feature | Classic | Hustler | Realism |
-| ------- | ------- | ------- | ------- |
-| Price anchor | Fantasy | Fantasy | Real-world (per oz) |
-| Market model | Random range | Random + events | Supply/demand + connects |
-| Buy source | Open market | Open market | Connect (wholesale) or street (expensive) |
-| Heat model | Per-travel reset | Per-travel + Hardass | Persistent per-borough |
-| Named characters | Vinnie (Hustler) | Vinnie + Hardass | Vinnie + connects + territory crew |
-| HP system | ❌ | ✅ | ✅ (same as Hustler) |
-| Reputation | ❌ | ❌ | ✅ |
-| Drug quality/cutting | ❌ | ❌ | ✅ |
-| Stash houses | Safe stash | Safe stash | Raidable stash houses |
-| Difficulty | Easy | Medium | Hard |
+| Feature              | Classic          | Hustler              | Realism                                   |
+| -------------------- | ---------------- | -------------------- | ----------------------------------------- |
+| Price anchor         | Fantasy          | Fantasy              | Real-world (per oz)                       |
+| Market model         | Random range     | Random + events      | Supply/demand + connects                  |
+| Buy source           | Open market      | Open market          | Connect (wholesale) or street (expensive) |
+| Heat model           | Per-travel reset | Per-travel + Hardass | Persistent per-borough                    |
+| Named characters     | Vinnie (Hustler) | Vinnie + Hardass     | Vinnie + connects + territory crew        |
+| HP system            | ❌               | ✅                   | ✅ (same as Hustler)                      |
+| Reputation           | ❌               | ❌                   | ✅                                        |
+| Drug quality/cutting | ❌               | ❌                   | ✅                                        |
+| Stash houses         | Safe stash       | Safe stash           | Raidable stash houses                     |
+| Difficulty           | Easy             | Medium               | Hard                                      |
 
 ---
 

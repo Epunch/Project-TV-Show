@@ -4,9 +4,14 @@
  */
 import { DRUGS } from "../data/drugs.js";
 import { currentLoad, netWorth } from "../engine/state.js";
+import { getStreetBuyPrice } from "../engine/market.js";
+import { fmtMoney, fmtWeight, fmtPriceUnit, LOCALE } from "../data/locale.js";
 
 // ── Element refs (set once on boot) ──────────────────────────────────────────
 let els = {};
+
+// ── Previous market prices — used to calculate flash direction ───────────────
+let prevMarket = {};
 
 export function bindElements() {
   els = {
@@ -52,6 +57,10 @@ export function bindElements() {
     endTitle: document.getElementById("end-title"),
     endMessage: document.getElementById("end-message"),
     endNetWorth: document.getElementById("end-networth"),
+
+    // Realism stats (may not exist)
+    repStat: document.getElementById("stat-rep"),
+    heatStat: document.getElementById("stat-heat"),
   };
 }
 
@@ -64,9 +73,13 @@ export function render(state) {
   renderMarket(state);
   renderTravelList(state);
 
-  if (state.isHustler) {
+  if (state.isHustler || state.isRealism) {
     renderHpBar(state);
     renderItems(state);
+  }
+
+  if (state.isRealism) {
+    renderRealismStats(state);
   }
 }
 
@@ -84,11 +97,18 @@ function renderTravelList(state) {
 
     // Police scanner: show heat indicators
     const heatSpan = btn.querySelector(".heat-indicator");
-    if (state.isHustler && state.scannerActive) {
+    if ((state.isHustler || state.isRealism) && state.scannerActive) {
       const loc = state.locations.find((l) => l.id === locId);
-      const heat = loc ? loc.heatMod : 1;
+      let heat;
+      if (state.isRealism) {
+        // Use dynamic borough heat + base heatMod
+        const bHeat = state.boroughHeat[locId] ?? 0;
+        heat = (loc ? loc.heatMod : 1) + bHeat;
+      } else {
+        heat = loc ? loc.heatMod : 1;
+      }
       const heatLabel =
-        heat >= 1.3 ? "🔴" : heat >= 1.0 ? "🟡" : "🟢";
+        heat >= 1.3 ? "[HOT]" : heat >= 1.0 ? "[WARM]" : "[COOL]";
       if (heatSpan) {
         heatSpan.textContent = heatLabel;
       } else {
@@ -102,11 +122,14 @@ function renderTravelList(state) {
     }
   });
 
-  // Clinic button visibility (Hustler + correct location)
+  // Clinic button visibility (Hustler/Realism + correct location)
   const clinicBtn = document.getElementById("btn-visit-clinic");
   if (clinicBtn) {
     const CLINIC_LOCS = ["bronx", "manhattan"];
-    if (state.isHustler && CLINIC_LOCS.includes(state.location.id)) {
+    if (
+      (state.isHustler || state.isRealism) &&
+      CLINIC_LOCS.includes(state.location.id)
+    ) {
       clinicBtn.classList.remove("hidden");
     } else {
       clinicBtn.classList.add("hidden");
@@ -119,7 +142,11 @@ function renderTravelList(state) {
 function renderHeader(state) {
   els.locationName.textContent = state.location.name.toUpperCase();
   els.dayCounter.textContent = `days left: ${state.totalDays - state.day + 1}`;
-  els.holdCounter.textContent = `hold: ${currentLoad(state)} / ${state.maxHold}`;
+  const load = fmtWeight(currentLoad(state), state.isRealism);
+  const maxH = fmtWeight(state.maxHold, state.isRealism);
+  els.holdCounter.textContent = state.isRealism
+    ? `hold: ${load} / ${maxH}`
+    : `hold: ${currentLoad(state)} / ${state.maxHold}`;
   if (els.playerNameDisplay) {
     els.playerNameDisplay.textContent = state.playerName || "---";
   }
@@ -128,11 +155,11 @@ function renderHeader(state) {
 // ── Stats ─────────────────────────────────────────────────────────────────────
 
 function renderStats(state) {
-  els.cash.textContent = fmt(state.cash);
-  els.bank.textContent = fmt(state.bank);
-  els.debt.textContent = fmt(state.debt);
+  els.cash.textContent = fmtMoney(state.cash);
+  els.bank.textContent = fmtMoney(state.bank);
+  els.debt.textContent = fmtMoney(state.debt);
   els.guns.textContent = state.guns;
-  els.netWorth.textContent = fmt(netWorth(state));
+  els.netWorth.textContent = fmtMoney(netWorth(state));
 }
 
 // ── HP Bar (Hustler only) ────────────────────────────────────────────────────
@@ -158,7 +185,7 @@ function renderHpBar(state) {
 function renderItems(state) {
   if (!els.itemsList) return;
 
-  if (state.items.length === 0) {
+  if (state.items.length === 0 && !state.vinnieJob && !state.pendingFavour) {
     els.itemsList.innerHTML = '<span class="text-muted">No items</span>';
     return;
   }
@@ -174,7 +201,14 @@ function renderItems(state) {
   if (state.vinnieJob) {
     const j = state.vinnieJob;
     const daysLeft = j.deadline - state.day;
-    badges += `<span class="item-badge item-badge-job" title="Vinnie's Job">📦 ${j.amount}× ${j.drugId} → ${j.locationName} (${daysLeft}d)</span>`;
+    badges += `<span class="item-badge item-badge-job" title="Vinnie's Job">JOB: ${j.amount}× ${j.drugId} → ${j.locationName} (${daysLeft}d)</span>`;
+  }
+
+  // Show active favour (Realism — Tommy Bags unlock)
+  if (state.isRealism && state.pendingFavour) {
+    const f = state.pendingFavour;
+    const daysLeft = f.deadline - state.day;
+    badges += `<span class="item-badge item-badge-favour" title="Tommy's Favour">FAVOUR: ${f.amount}oz ${f.drugId} → ${f.locationName} (${daysLeft}d)</span>`;
   }
 
   els.itemsList.innerHTML = badges;
@@ -187,7 +221,7 @@ function renderInventory(state) {
     (drug) => `
     <tr>
       <td class="drug-name">${drug.name}</td>
-      <td class="drug-qty">${state.stash[drug.id]}</td>
+      <td class="drug-qty">${fmtWeight(state.stash[drug.id], state.isRealism)}</td>
       <td class="drug-actions">
         ${
           state.stash[drug.id] > 0
@@ -198,41 +232,113 @@ function renderInventory(state) {
     </tr>`,
   ).join("");
 
-  els.coatBody.innerHTML = DRUGS.map(
-    (drug) => `
+  els.coatBody.innerHTML = DRUGS.map((drug) => {
+    const qty = state.trenchCoat[drug.id];
+    const purityLabel =
+      state.isRealism && qty > 0 ? ` (${state.coatPurity[drug.id]}%)` : "";
+    const cuttable = state.isRealism && qty > 0 && drug.cuttable;
+    return `
     <tr>
-      <td class="drug-name">${drug.name}</td>
-      <td class="drug-qty">${state.trenchCoat[drug.id]}</td>
+      <td class="drug-name">${drug.name}${purityLabel}</td>
+      <td class="drug-qty">${fmtWeight(qty, state.isRealism)}</td>
       <td class="drug-actions">
         ${
-          state.trenchCoat[drug.id] > 0
+          qty > 0
             ? `<button class="btn-sm" data-action="drop-stash" data-drug="${drug.id}">Stash</button>`
             : ""
         }
         ${
-          state.trenchCoat[drug.id] > 0
-            ? `<button class="btn-sm btn-sell" data-action="sell" data-drug="${drug.id}">Sell</button>`
+          qty > 0
+            ? `<button class="btn-sm btn-sell" data-action="${state.isRealism ? "sell-street" : "sell"}" data-drug="${drug.id}">Sell</button>`
+            : ""
+        }
+        ${
+          cuttable
+            ? `<button class="btn-sm btn-cut" data-action="cut" data-drug="${drug.id}">Cut</button>`
             : ""
         }
       </td>
-    </tr>`,
-  ).join("");
+    </tr>`;
+  }).join("");
 }
 
 // ── Market table ──────────────────────────────────────────────────────────────
 
+function trendArrow(drugId, current) {
+  const prev = prevMarket[drugId];
+  if (prev === undefined || prev === current) {
+    return '<span class="price-trend price-trend-flat">—</span>';
+  }
+  return current > prev
+    ? '<span class="price-trend price-trend-up">▲</span>'
+    : '<span class="price-trend price-trend-down">▼</span>';
+}
+
+function supplyBadge(drug, state) {
+  const evtData = state.supplyEvents?.[drug.id];
+  if (!evtData || evtData.endsOn <= state.day) return "";
+  return evtData.type === "drought"
+    ? '<span class="supply-badge supply-badge-drought">DROUGHT</span>'
+    : '<span class="supply-badge supply-badge-flood">FLOOD</span>';
+}
+
 function renderMarket(state) {
-  els.marketBody.innerHTML = DRUGS.map((drug) => {
-    const price = state.market[drug.id];
-    return `
-    <tr>
-      <td class="drug-name">${drug.name}</td>
-      <td class="drug-price">${fmt(price)}</td>
-      <td class="drug-actions">
-        <button class="btn-sm btn-buy" data-action="buy" data-drug="${drug.id}">Buy</button>
-      </td>
-    </tr>`;
-  }).join("");
+  const snapshot = { ...prevMarket }; // capture before we overwrite
+
+  if (state.isRealism) {
+    const priceUnit = fmtPriceUnit(true);
+    const divisor = LOCALE.useMetricWeight ? 28.35 : 1;
+
+    els.marketBody.innerHTML = DRUGS.map((drug) => {
+      const sellPrice = state.market[drug.id];
+      const buyPrice = getStreetBuyPrice(drug.id, state.market);
+      return `
+      <tr data-drug-row="${drug.id}">
+        <td class="drug-name">${drug.name}${supplyBadge(drug, state)}</td>
+        <td class="drug-price" data-drug-price="${drug.id}">${fmtMoney(sellPrice / divisor)}${priceUnit}${trendArrow(drug.id, sellPrice)}</td>
+        <td class="drug-buy-price">${fmtMoney(buyPrice / divisor)}${priceUnit}</td>
+        <td class="drug-actions">
+          <button class="btn-sm btn-buy" data-action="buy-street" data-drug="${drug.id}">Buy Street</button>
+        </td>
+      </tr>`;
+    }).join("");
+  } else {
+    els.marketBody.innerHTML = DRUGS.map((drug) => {
+      const price = state.market[drug.id];
+      return `
+      <tr data-drug-row="${drug.id}">
+        <td class="drug-name">${drug.name}${supplyBadge(drug, state)}</td>
+        <td class="drug-price" data-drug-price="${drug.id}">
+          ${fmtMoney(price)}${trendArrow(drug.id, price)}
+        </td>
+        <td class="drug-actions">
+          <button class="btn-sm btn-buy" data-action="buy" data-drug="${drug.id}">Buy</button>
+        </td>
+      </tr>`;
+    }).join("");
+  }
+
+  // Flash cells that changed price
+  DRUGS.forEach((drug) => {
+    const current = state.market[drug.id];
+    const previous = snapshot[drug.id];
+    if (previous === undefined || previous === current) return;
+    const cell = els.marketBody.querySelector(`[data-drug-price="${drug.id}"]`);
+    if (!cell) return;
+    const cls = current > previous ? "flash-up" : "flash-down";
+    cell.classList.remove("flash-up", "flash-down");
+    // Force reflow so re-adding the class always restarts the animation
+    void cell.offsetWidth;
+    cell.classList.add(cls);
+    cell.addEventListener("animationend", () => cell.classList.remove(cls), {
+      once: true,
+    });
+  });
+
+  // Save current prices for next render cycle
+  DRUGS.forEach((drug) => {
+    prevMarket[drug.id] = state.market[drug.id];
+  });
 }
 
 // ── Log ───────────────────────────────────────────────────────────────────────
@@ -249,7 +355,7 @@ export function appendLog(state, messages) {
 
   els.logList.innerHTML = state.log
     .map((m) => {
-      const tipClass = m.startsWith("💡") ? ' class="log-tip"' : "";
+      const tipClass = m.startsWith("[TIP]") ? ' class="log-tip"' : "";
       return `<li${tipClass}>${m}</li>`;
     })
     .join("");
@@ -266,6 +372,13 @@ export function showModal(title, bodyHTML) {
   els.modalTitle.textContent = title;
   els.modalBody.innerHTML = bodyHTML;
   els.overlay.classList.remove("hidden");
+  // Re-trigger the slide-in animation each time the modal opens
+  const box = els.overlay.querySelector(".modal-box");
+  if (box) {
+    box.style.animation = "none";
+    void box.offsetWidth; // force reflow
+    box.style.animation = "";
+  }
 }
 
 export function hideModal() {
@@ -273,30 +386,49 @@ export function hideModal() {
   els.modalBody.innerHTML = "";
 }
 
+// ── Realism stats row ─────────────────────────────────────────────────────
+
+function renderRealismStats(state) {
+  const repEl = document.getElementById("stat-rep");
+  const heatEl = document.getElementById("stat-heat");
+
+  if (repEl) repEl.textContent = Math.floor(state.reputation);
+  if (heatEl) {
+    const bHeat = state.boroughHeat[state.location.id] ?? 0;
+    const heatPct = Math.min(100, Math.round(bHeat * 100));
+    heatEl.textContent = `${heatPct}%`;
+    heatEl.classList.toggle("stat-heat-high", heatPct >= 50);
+  }
+}
+
 // ── End screen ────────────────────────────────────────────────────────────────
 
 export function showEndScreen(state) {
   els.gameScreen.classList.add("hidden");
   els.endScreen.classList.remove("hidden");
+  els.endScreen.classList.remove("screen-fade");
+  void els.endScreen.offsetWidth;
+  els.endScreen.classList.add("screen-fade");
 
   const nw = netWorth(state);
 
   if (state.won) {
-    els.endTitle.textContent = "🏆 YOU WIN";
-    els.endMessage.textContent = "Debt cleared. You made it out alive.";
-  } else if (state.isHustler && state.hp <= 0) {
-    els.endTitle.textContent = "💀 GAME OVER";
+    els.endTitle.textContent = "YOU WIN";
+    els.endMessage.textContent = state.isRealism
+      ? "Debt cleared. You made it off the streets."
+      : "Debt cleared. You made it out alive.";
+  } else if ((state.isHustler || state.isRealism) && state.hp <= 0) {
+    els.endTitle.textContent = "GAME OVER";
     els.endMessage.textContent = "You didn't survive the streets.";
   } else {
-    els.endTitle.textContent = "💀 GAME OVER";
-    els.endMessage.textContent = `You still owe $${state.debt.toLocaleString()} to the shark.`;
+    els.endTitle.textContent = "GAME OVER";
+    els.endMessage.textContent = `You still owe ${fmtMoney(state.debt)} to the shark.`;
   }
 
-  els.endNetWorth.textContent = `Final net worth: ${fmt(nw)}`;
+  els.endNetWorth.textContent = `Final net worth: ${fmtMoney(nw)}`;
 }
 
 // ── Utility ───────────────────────────────────────────────────────────────────
 
-function fmt(n) {
-  return "$" + Math.round(n).toLocaleString();
-}
+// fmt is an alias kept so any surviving template literal usages still work
+const fmt = fmtMoney;
